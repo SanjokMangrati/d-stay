@@ -1,0 +1,27 @@
+{
+  "name": "@d-stay/domain",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    "./locale": {
+      "types": "./dist/locale.d.ts",
+      "default": "./dist/locale.js"
+    },
+    "./money": {
+      "types": "./dist/money.d.ts",
+      "default": "./dist/money.js"
+    },
+    "./datetime": {
+      "types": "./dist/datetime.d.ts",
+      "default": "./dist/datetime.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch --preserveWatchOutput",
+    "check-types": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "5.9.2"
+  }
+}

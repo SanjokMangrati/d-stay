@@ -1,0 +1,30 @@
+{
+  "name": "@d-stay/api-client",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    "./fetcher": "./src/fetcher.ts",
+    "./error": "./src/api-error.ts",
+    "./models": "./src/generated/models/index.ts",
+    "./endpoints/*": "./src/generated/endpoints/*/*.ts",
+    "./schemas/*": "./src/generated/schemas/*/*.ts",
+    "./mocks/*": "./src/generated/endpoints/*/*.msw.ts"
+  },
+  "scripts": {
+    "codegen": "orval --config ./orval.config.ts",
+    "check-types": "tsc -p tsconfig.json --noEmit"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": "^5.101.4",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^10.5.0",
+    "@tanstack/react-query": "^5.101.4",
+    "@types/react": "^19",
+    "msw": "^2.15.0",
+    "orval": "^8.23.0",
+    "typescript": "5.9.2",
+    "zod": "^4.4.3"
+  }
+}

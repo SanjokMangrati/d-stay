@@ -11,7 +11,24 @@
       "dependsOn": ["^lint"]
     },
     "check-types": {
-      "dependsOn": ["^check-types"]
+      "dependsOn": ["^build", "^check-types"]
+    },
+    "test": {
+      "dependsOn": ["^build"]
+    },
+    "test:e2e": {
+      "dependsOn": ["^build"],
+      "cache": false
+    },
+    "openapi": {
+      "dependsOn": ["^build"],
+      "inputs": ["src/**", "scripts/**", "tsconfig.json"],
+      "outputs": ["openapi.json"]
+    },
+    "codegen": {
+      "dependsOn": ["api#openapi"],
+      "outputs": ["src/generated/**"],
+      "cache": false
     },
     "dev": {
       "cache": false,

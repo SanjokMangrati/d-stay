@@ -1,0 +1,86 @@
+{
+  "app": {
+    "name": "d-stay",
+    "tagline": "Your homestay, in one place."
+  },
+  "auth": {
+    "hero": {
+      "title": "Go ahead and set up your homestay",
+      "subtitle": "Sign in or create an account to manage your bookings, calendar and rates."
+    },
+    "signIn": {
+      "tab": "Sign in",
+      "submit": "Sign in",
+      "submitting": "Signing in…",
+      "forgotPassword": "Forgot password?"
+    },
+    "signUp": {
+      "tab": "Sign up",
+      "submit": "Create account",
+      "submitting": "Creating your account…"
+    },
+    "forgotPassword": {
+      "title": "Reset your password",
+      "subtitle": "We will email you a link to choose a new password.",
+      "submit": "Send reset link",
+      "submitting": "Sending…",
+      "sent": "If that email has an account, a reset link is on its way.",
+      "backToSignIn": "Back to sign in"
+    },
+    "resetPassword": {
+      "title": "Choose a new password",
+      "subtitle": "You will be signed in once it is saved.",
+      "submit": "Save password",
+      "submitting": "Saving…",
+      "missingToken": "This reset link is incomplete. Request a new one.",
+      "requestNewLink": "Request a new link"
+    },
+    "fields": {
+      "name": "Your name",
+      "namePlaceholder": "Meera Rawat",
+      "email": "Email",
+      "emailPlaceholder": "you@example.com",
+      "phone": "Phone number",
+      "phonePlaceholder": "98765 43210",
+      "phoneHint": "So d-stay can reach you about your property.",
+      "password": "Password",
+      "newPassword": "New password",
+      "passwordHint": "At least 8 characters.",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password"
+    },
+    "google": {
+      "continue": "Google",
+      "redirecting": "Opening Google…"
+    },
+    "continueWith": "Or continue with",
+    "signOut": "Sign out",
+    "validation": {
+      "nameRequired": "Enter your name.",
+      "emailInvalid": "Enter a valid email address.",
+      "phoneInvalid": "Enter an Indian mobile number, like 98765 43210.",
+      "passwordTooShort": "Use at least 8 characters.",
+      "passwordTooLong": "Use at most 128 characters."
+    },
+    "errors": {
+      "invalidCredentials": "That email and password do not match an account.",
+      "emailTaken": "An account already exists for that email. Sign in instead.",
+      "weakPassword": "Choose a longer password.",
+      "invalidToken": "That link has expired. Request a new one.",
+      "unreachable": "d-stay could not be reached. Check your connection and try again.",
+      "unexpected": "Something went wrong. Try again."
+    }
+  },
+  "shell": {
+    "signedInAs": "Signed in as {name}",
+    "properties": "Your properties",
+    "noProperties": "You have not added a property yet.",
+    "role": {
+      "OWNER": "Owner",
+      "MANAGER": "Manager",
+      "STAFF": "Staff"
+    },
+    "adminBadge": "Platform admin",
+    "unverifiedEmail": "Verify your email so you can recover this account."
+  }
+}

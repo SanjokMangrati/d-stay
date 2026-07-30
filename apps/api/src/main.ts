@@ -7,7 +7,12 @@ import { AppConfig } from './config/app-config';
 import { buildOpenApiDocument } from './openapi/build-document';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { bufferLogs: true });
+  const app = await NestFactory.create(AppModule, {
+    bufferLogs: true,
+    // Better Auth reads the raw request body itself. `AuthModule` reinstates
+    // JSON and urlencoded parsing for every route other than its own.
+    bodyParser: false,
+  });
   app.useLogger(app.get(Logger));
 
   const config = app.get(AppConfig);

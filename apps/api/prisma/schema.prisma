@@ -1,13 +1,144 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
+// Table and column names are snake_case because parts of this schema — the
+// RoomStay exclusion constraint above all — ship as hand-written SQL inside
+// migrations, and that SQL should not have to quote camelCase identifiers.
+// Operational timestamps are `timestamptz`; the app timezone is Asia/Kolkata.
 
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
+  // The API compiles to CommonJS, and ts-node loads these files directly when
+  // the OpenAPI spec is generated.
+  moduleFormat = "cjs"
+  importFileExtension = ""
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+/// Distinguishes platform operators from the hosts they support. Property-level
+/// permission lives in PropertyMembership; this is only the global capability.
+enum UserRole {
+  HOST
+  ADMIN
+}
+
+/// Phase 1 only ever creates OWNER rows. MANAGER and STAFF exist so that adding
+/// an invite flow later is a feature rather than a migration.
+enum PropertyRole {
+  OWNER
+  MANAGER
+  STAFF
+}
+
+/// Identity. Better Auth owns `id`, `name`, `email`, `emailVerified`, `image`
+/// and the timestamps; everything else is a d-stay profile field declared to
+/// Better Auth through `user.additionalFields`.
+model User {
+  id            String   @id
+  name          String
+  email         String   @unique
+  emailVerified Boolean  @default(false) @map("email_verified")
+  image         String?
+  role          UserRole @default(HOST)
+  /// Captured at signup, never verified in phase 1 — SMS OTP needs DLT
+  /// registration that does not exist yet.
+  phone         String?
+  phoneVerified Boolean  @default(false) @map("phone_verified")
+  locale        String   @default("en")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  sessions    Session[]
+  accounts    Account[]
+  memberships PropertyMembership[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id
+  token     String   @unique
+  expiresAt DateTime @map("expires_at") @db.Timestamptz(3)
+  ipAddress String?  @map("ip_address")
+  userAgent String?  @map("user_agent")
+  userId    String   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+/// One row per credential: the email+password record and every linked social
+/// provider. Cascades with the user because a credential without an identity is
+/// meaningless, not history worth keeping.
+model Account {
+  id                    String    @id
+  accountId             String    @map("account_id")
+  providerId            String    @map("provider_id")
+  userId                String    @map("user_id")
+  accessToken           String?   @map("access_token")
+  refreshToken          String?   @map("refresh_token")
+  idToken               String?   @map("id_token")
+  accessTokenExpiresAt  DateTime? @map("access_token_expires_at") @db.Timestamptz(3)
+  refreshTokenExpiresAt DateTime? @map("refresh_token_expires_at") @db.Timestamptz(3)
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+  @@index([userId])
+  @@map("accounts")
+}
+
+/// Short-lived tokens for email verification and password reset.
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime @map("expires_at") @db.Timestamptz(3)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt  DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([identifier])
+  @@map("verifications")
+}
+
+/// The homestay. Setup fields (geo, amenities, rates, GST, status) arrive with
+/// the properties module; what exists here is the identity that memberships and
+/// the property-scoped guard hang off.
+model Property {
+  id        String   @id @default(uuid(7))
+  name      String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  memberships PropertyMembership[]
+
+  @@map("properties")
+}
+
+/// Authorization for everything property-scoped. `isActive` revokes access
+/// without deleting the record of who once had it.
+model PropertyMembership {
+  id         String       @id @default(uuid(7))
+  userId     String       @map("user_id")
+  propertyId String       @map("property_id")
+  role       PropertyRole
+  isActive   Boolean      @default(true) @map("is_active")
+  createdAt  DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt  DateTime     @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+
+  @@unique([userId, propertyId])
+  @@index([propertyId])
+  @@map("property_memberships")
 }

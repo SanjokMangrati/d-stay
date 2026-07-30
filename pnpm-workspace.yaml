@@ -10,3 +10,12 @@ allowBuilds:
   unrs-resolver: true
   esbuild: true
   msw: true
+  # Pulled in transitively by next-intl's tooling; nothing in the build path
+  # calls either, so their native postinstalls are skipped.
+  '@parcel/watcher': false
+  '@swc/core': false
+  # Testcontainers' Docker transport. It talks to a local daemon over a named
+  # pipe or TCP, so the optional native SSH and CPU-feature builds are not used.
+  cpu-features: false
+  protobufjs: false
+  ssh2: false

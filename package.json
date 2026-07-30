@@ -3,11 +3,13 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev",
+    "dev": "turbo run dev --filter=web... --filter=api...",
+    "dev:all": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
     "test": "turbo run test",
+    "test:e2e": "turbo run test:e2e",
     "codegen": "turbo run codegen",
     "codegen:check": "turbo run codegen && git diff --exit-code -- apps/api/openapi.json packages/api-client/src/generated"
   },
@@ -18,6 +20,6 @@
   },
   "packageManager": "pnpm@11.4.0",
   "engines": {
-    "node": ">=20.9"
+    "node": ">=22.12"
   }
 }

@@ -48,4 +48,15 @@ export class AppConfig {
   get webAppUrl(): string {
     return this.env.WEB_APP_URL;
   }
+
+  get betterAuthSecret(): string {
+    return this.env.BETTER_AUTH_SECRET;
+  }
+
+  get googleOAuth(): { clientId: string; clientSecret: string } {
+    return {
+      clientId: this.env.GOOGLE_CLIENT_ID,
+      clientSecret: this.env.GOOGLE_CLIENT_SECRET,
+    };
+  }
 }

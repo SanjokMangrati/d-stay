@@ -18,11 +18,19 @@ export interface ApiClientConfig {
  */
 export type ErrorType<TPayload> = ApiError | ApiTransportError;
 
-let clientConfig: ApiClientConfig | undefined;
+/**
+ * Held on `globalThis` rather than in a module variable because a bundler gives
+ * the instrumentation entry and the Server Component graph separate instances of
+ * this module — a plain `let` would be written in one and read as `undefined` in
+ * the other. The process is the runtime, so the process is where it lives.
+ */
+const CONFIG_KEY = Symbol.for("d-stay.api-client.config");
+
+type ConfigHost = { [CONFIG_KEY]?: ApiClientConfig };
 
 /** Called once per runtime during app startup. */
 export function configureApiClient(config: ApiClientConfig): void {
-  clientConfig = config;
+  (globalThis as ConfigHost)[CONFIG_KEY] = config;
 }
 
 /**
@@ -34,6 +42,7 @@ export async function apiFetch<T>(
   url: string,
   options: RequestInit,
 ): Promise<T> {
+  const clientConfig = (globalThis as ConfigHost)[CONFIG_KEY];
   if (!clientConfig) {
     throw new Error(
       "configureApiClient() must be called before any API request is made.",

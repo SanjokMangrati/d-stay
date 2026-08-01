@@ -89,6 +89,7 @@ export class ApiExceptionFilter implements ExceptionFilter {
         status: exception.getStatus(),
         code: exception.code,
         message: exception.message,
+        fieldErrors: exception.fieldErrors,
       };
     }
 

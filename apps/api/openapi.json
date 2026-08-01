@@ -131,6 +131,45 @@
         "tags": [
           "properties"
         ]
+      },
+      "post": {
+        "operationId": "Properties_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePropertyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PropertyDetailDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error envelope returned by every failing request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "properties"
+        ]
       }
     },
     "/properties/{propertyId}": {
@@ -152,7 +191,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PropertySummaryDto_Output"
+                  "$ref": "#/components/schemas/PropertyDetailDto_Output"
                 }
               }
             }
@@ -170,6 +209,884 @@
         },
         "tags": [
           "properties"
+        ]
+      },
+      "patch": {
+        "operationId": "Properties_update",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePropertyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PropertyDetailDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error envelope returned by every failing request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "properties"
+        ]
+      }
+    },
+    "/properties/{propertyId}/submit": {
+      "post": {
+        "operationId": "Properties_submitForReview",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PropertyDetailDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error envelope returned by every failing request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "properties"
+        ]
+      }
+    },
+    "/properties/{propertyId}/media": {
+      "get": {
+        "operationId": "Media_list",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "roomId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaListDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error envelope returned by every failing request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "media"
+        ]
+      }
+    },
+    "/properties/{propertyId}/media/uploads": {
+      "post": {
+        "operationId": "Media_createUpload",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUploadDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadIntentDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error envelope returned by every failing request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "media"
+        ]
+      }
+    },
+    "/properties/{propertyId}/media/{mediaId}/complete": {
+      "post": {
+        "operationId": "Media_completeUpload",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "mediaId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompleteUploadDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaAssetDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error envelope returned by every failing request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "media"
+        ]
+      }
+    },
+    "/properties/{propertyId}/media/order": {
+      "patch": {
+        "operationId": "Media_reorder",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReorderMediaDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaListDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error envelope returned by every failing request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "media"
+        ]
+      }
+    },
+    "/properties/{propertyId}/media/{mediaId}/cover": {
+      "post": {
+        "operationId": "Media_setCover",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "mediaId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaListDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error envelope returned by every failing request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "media"
+        ]
+      }
+    },
+    "/properties/{propertyId}/media/{mediaId}": {
+      "delete": {
+        "operationId": "Media_remove",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "mediaId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaListDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error envelope returned by every failing request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "media"
+        ]
+      }
+    },
+    "/properties/{propertyId}/rooms": {
+      "get": {
+        "operationId": "Rooms_list",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoomListDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error envelope returned by every failing request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "rooms"
+        ]
+      },
+      "post": {
+        "operationId": "Rooms_create",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRoomDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoomDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error envelope returned by every failing request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "rooms"
+        ]
+      }
+    },
+    "/properties/{propertyId}/rooms/order": {
+      "patch": {
+        "operationId": "Rooms_reorder",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReorderRoomsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoomListDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error envelope returned by every failing request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "rooms"
+        ]
+      }
+    },
+    "/properties/{propertyId}/rooms/{roomId}": {
+      "patch": {
+        "operationId": "Rooms_update",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "roomId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRoomDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoomDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error envelope returned by every failing request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "rooms"
+        ]
+      },
+      "delete": {
+        "operationId": "Rooms_remove",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "roomId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoomListDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error envelope returned by every failing request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "rooms"
+        ]
+      }
+    },
+    "/properties/{propertyId}/pricing": {
+      "get": {
+        "operationId": "Pricing_find",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PricingDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error envelope returned by every failing request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "pricing"
+        ]
+      },
+      "patch": {
+        "operationId": "Pricing_updateMealCharge",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMealChargeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PricingDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error envelope returned by every failing request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "pricing"
+        ]
+      }
+    },
+    "/properties/{propertyId}/pricing/rooms/{roomId}": {
+      "patch": {
+        "operationId": "Pricing_updateRoomRates",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "roomId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRoomRatesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PricingDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error envelope returned by every failing request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "pricing"
+        ]
+      }
+    },
+    "/properties/{propertyId}/pricing/overrides": {
+      "post": {
+        "operationId": "Pricing_createOverride",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRateOverrideDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PricingDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error envelope returned by every failing request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "pricing"
+        ]
+      }
+    },
+    "/properties/{propertyId}/pricing/overrides/{overrideId}": {
+      "delete": {
+        "operationId": "Pricing_removeOverride",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "overrideId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PricingDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error envelope returned by every failing request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "pricing"
         ]
       }
     }
@@ -300,6 +1217,16 @@
                 "name": {
                   "type": "string"
                 },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "DRAFT",
+                    "PENDING_REVIEW",
+                    "PUBLISHED",
+                    "REJECTED",
+                    "SUSPENDED"
+                  ]
+                },
                 "membershipRole": {
                   "type": "string",
                   "enum": [
@@ -314,6 +1241,7 @@
               "required": [
                 "id",
                 "name",
+                "status",
                 "membershipRole"
               ],
               "additionalProperties": false
@@ -325,7 +1253,20 @@
         ],
         "additionalProperties": false
       },
-      "PropertySummaryDto_Output": {
+      "CreatePropertyDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "PropertyDetailDto_Output": {
         "type": "object",
         "properties": {
           "id": {
@@ -336,6 +1277,16 @@
           "name": {
             "type": "string"
           },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "PENDING_REVIEW",
+              "PUBLISHED",
+              "REJECTED",
+              "SUSPENDED"
+            ]
+          },
           "membershipRole": {
             "type": "string",
             "enum": [
@@ -345,14 +1296,1046 @@
               null
             ],
             "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "rejectionReason": {
+            "type": "string",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90,
+            "nullable": true
+          },
+          "longitude": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180,
+            "nullable": true
+          },
+          "landmark": {
+            "type": "string",
+            "nullable": true
+          },
+          "directions": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "district": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "checkInTime": {
+            "type": "string",
+            "nullable": true
+          },
+          "checkOutTime": {
+            "type": "string",
+            "nullable": true
+          },
+          "houseRules": {
+            "type": "string",
+            "nullable": true
+          },
+          "amenities": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "PARKING",
+                "HOT_WATER",
+                "WIFI",
+                "GENERATOR",
+                "BONFIRE",
+                "PETS_ALLOWED"
+              ]
+            }
+          },
+          "mealPlan": {
+            "type": "string",
+            "enum": [
+              "ROOM_ONLY",
+              "BREAKFAST",
+              "BREAKFAST_DINNER",
+              "ALL_MEALS",
+              null
+            ],
+            "nullable": true
+          },
+          "gstEnabled": {
+            "type": "boolean"
+          },
+          "gstin": {
+            "type": "string",
+            "nullable": true
+          },
+          "homestayRegistrationNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "missingFields": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "description",
+                "photos",
+                "rooms",
+                "location",
+                "city",
+                "district",
+                "state",
+                "checkInTime",
+                "checkOutTime",
+                "mealPlan",
+                "gstin"
+              ]
+            }
           }
         },
         "required": [
           "id",
           "name",
-          "membershipRole"
+          "status",
+          "membershipRole",
+          "description",
+          "rejectionReason",
+          "latitude",
+          "longitude",
+          "landmark",
+          "directions",
+          "city",
+          "district",
+          "state",
+          "checkInTime",
+          "checkOutTime",
+          "houseRules",
+          "amenities",
+          "mealPlan",
+          "gstEnabled",
+          "gstin",
+          "homestayRegistrationNumber",
+          "missingFields"
         ],
         "additionalProperties": false
+      },
+      "UpdatePropertyDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 2000,
+            "nullable": true
+          },
+          "latitude": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90,
+            "nullable": true
+          },
+          "longitude": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180,
+            "nullable": true
+          },
+          "landmark": {
+            "type": "string",
+            "maxLength": 200,
+            "nullable": true
+          },
+          "directions": {
+            "type": "string",
+            "maxLength": 2000,
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "maxLength": 120,
+            "nullable": true
+          },
+          "district": {
+            "type": "string",
+            "maxLength": 120,
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "maxLength": 120,
+            "nullable": true
+          },
+          "checkInTime": {
+            "type": "string",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+            "nullable": true
+          },
+          "checkOutTime": {
+            "type": "string",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+            "nullable": true
+          },
+          "houseRules": {
+            "type": "string",
+            "maxLength": 4000,
+            "nullable": true
+          },
+          "amenities": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "PARKING",
+                "HOT_WATER",
+                "WIFI",
+                "GENERATOR",
+                "BONFIRE",
+                "PETS_ALLOWED"
+              ]
+            }
+          },
+          "mealPlan": {
+            "type": "string",
+            "enum": [
+              "ROOM_ONLY",
+              "BREAKFAST",
+              "BREAKFAST_DINNER",
+              "ALL_MEALS",
+              null
+            ],
+            "nullable": true
+          },
+          "gstEnabled": {
+            "type": "boolean"
+          },
+          "gstin": {
+            "type": "string",
+            "pattern": "^\\d{2}[A-Z]{5}\\d{4}[A-Z][1-9A-Z]Z[0-9A-Z]$",
+            "nullable": true
+          },
+          "homestayRegistrationNumber": {
+            "type": "string",
+            "maxLength": 60,
+            "nullable": true
+          }
+        }
+      },
+      "MediaListDto_Output": {
+        "type": "object",
+        "properties": {
+          "media": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "roomId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                  "nullable": true
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "PENDING",
+                    "PROCESSING",
+                    "READY",
+                    "FAILED"
+                  ]
+                },
+                "thumbnailUrl": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "cardUrl": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "fullUrl": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "blurhash": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "width": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991,
+                  "nullable": true
+                },
+                "height": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991,
+                  "nullable": true
+                },
+                "sortOrder": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "isCover": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "roomId",
+                "status",
+                "thumbnailUrl",
+                "cardUrl",
+                "fullUrl",
+                "blurhash",
+                "width",
+                "height",
+                "sortOrder",
+                "isCover"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "media"
+        ],
+        "additionalProperties": false
+      },
+      "CreateUploadDto": {
+        "type": "object",
+        "properties": {
+          "roomId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "nullable": true
+          },
+          "contentType": {
+            "type": "string",
+            "enum": [
+              "image/jpeg",
+              "image/png",
+              "image/webp"
+            ]
+          },
+          "byteSize": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10485760
+          }
+        },
+        "required": [
+          "roomId",
+          "contentType",
+          "byteSize"
+        ]
+      },
+      "UploadIntentDto_Output": {
+        "type": "object",
+        "properties": {
+          "mediaId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "uploadUrl": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "required": [
+          "mediaId",
+          "uploadUrl"
+        ],
+        "additionalProperties": false
+      },
+      "CompleteUploadDto": {
+        "type": "object",
+        "properties": {
+          "width": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "width",
+          "height"
+        ]
+      },
+      "MediaAssetDto_Output": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "roomId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "PROCESSING",
+              "READY",
+              "FAILED"
+            ]
+          },
+          "thumbnailUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "cardUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "fullUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "blurhash": {
+            "type": "string",
+            "nullable": true
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991,
+            "nullable": true
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991,
+            "nullable": true
+          },
+          "sortOrder": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "isCover": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "roomId",
+          "status",
+          "thumbnailUrl",
+          "cardUrl",
+          "fullUrl",
+          "blurhash",
+          "width",
+          "height",
+          "sortOrder",
+          "isCover"
+        ],
+        "additionalProperties": false
+      },
+      "ReorderMediaDto": {
+        "type": "object",
+        "properties": {
+          "roomId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "nullable": true
+          },
+          "mediaIds": {
+            "minItems": 1,
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          }
+        },
+        "required": [
+          "roomId",
+          "mediaIds"
+        ]
+      },
+      "RoomListDto_Output": {
+        "type": "object",
+        "properties": {
+          "rooms": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "doubleBeds": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "singleBeds": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "extraMattresses": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "standardOccupancy": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "maxOccupancy": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "amenities": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "ATTACHED_BATHROOM",
+                      "BALCONY",
+                      "HEATER",
+                      "AIR_CONDITIONING"
+                    ]
+                  }
+                },
+                "sortOrder": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "isActive": {
+                  "type": "boolean"
+                },
+                "photoCount": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "coverThumbnailUrl": {
+                  "type": "string",
+                  "format": "uri",
+                  "nullable": true
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "description",
+                "doubleBeds",
+                "singleBeds",
+                "extraMattresses",
+                "standardOccupancy",
+                "maxOccupancy",
+                "amenities",
+                "sortOrder",
+                "isActive",
+                "photoCount",
+                "coverThumbnailUrl"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "rooms"
+        ],
+        "additionalProperties": false
+      },
+      "CreateRoomDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 2000,
+            "nullable": true
+          },
+          "doubleBeds": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 8
+          },
+          "singleBeds": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 8
+          },
+          "extraMattresses": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 8
+          },
+          "standardOccupancy": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "maxOccupancy": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "amenities": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ATTACHED_BATHROOM",
+                "BALCONY",
+                "HEATER",
+                "AIR_CONDITIONING"
+              ]
+            }
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "doubleBeds",
+          "singleBeds",
+          "extraMattresses",
+          "standardOccupancy",
+          "maxOccupancy",
+          "amenities"
+        ]
+      },
+      "RoomDto_Output": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "doubleBeds": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "singleBeds": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "extraMattresses": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "standardOccupancy": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "maxOccupancy": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "amenities": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ATTACHED_BATHROOM",
+                "BALCONY",
+                "HEATER",
+                "AIR_CONDITIONING"
+              ]
+            }
+          },
+          "sortOrder": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "photoCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "coverThumbnailUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "doubleBeds",
+          "singleBeds",
+          "extraMattresses",
+          "standardOccupancy",
+          "maxOccupancy",
+          "amenities",
+          "sortOrder",
+          "isActive",
+          "photoCount",
+          "coverThumbnailUrl"
+        ],
+        "additionalProperties": false
+      },
+      "ReorderRoomsDto": {
+        "type": "object",
+        "properties": {
+          "roomIds": {
+            "minItems": 1,
+            "maxItems": 30,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          }
+        },
+        "required": [
+          "roomIds"
+        ]
+      },
+      "UpdateRoomDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 2000,
+            "nullable": true
+          },
+          "doubleBeds": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 8
+          },
+          "singleBeds": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 8
+          },
+          "extraMattresses": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 8
+          },
+          "standardOccupancy": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "maxOccupancy": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "amenities": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ATTACHED_BATHROOM",
+                "BALCONY",
+                "HEATER",
+                "AIR_CONDITIONING"
+              ]
+            }
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "doubleBeds",
+          "singleBeds",
+          "extraMattresses",
+          "standardOccupancy",
+          "maxOccupancy",
+          "amenities",
+          "isActive"
+        ]
+      },
+      "PricingDto_Output": {
+        "type": "object",
+        "properties": {
+          "mealPlan": {
+            "type": "string",
+            "enum": [
+              "ROOM_ONLY",
+              "BREAKFAST",
+              "BREAKFAST_DINNER",
+              "ALL_MEALS",
+              null
+            ],
+            "nullable": true
+          },
+          "mealChargePerPerson": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "gstEnabled": {
+            "type": "boolean"
+          },
+          "rooms": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "roomId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "isActive": {
+                  "type": "boolean"
+                },
+                "standardOccupancy": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "baseRate": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991,
+                  "nullable": true
+                },
+                "weekendRate": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991,
+                  "nullable": true
+                },
+                "extraGuestCharge": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "roomId",
+                "name",
+                "isActive",
+                "standardOccupancy",
+                "baseRate",
+                "weekendRate",
+                "extraGuestCharge"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "overrides": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "roomId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "startDate": {
+                  "type": "string",
+                  "format": "date",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                },
+                "endDate": {
+                  "type": "string",
+                  "format": "date",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                },
+                "nightlyRate": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "minStayNights": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991,
+                  "nullable": true
+                }
+              },
+              "required": [
+                "id",
+                "roomId",
+                "startDate",
+                "endDate",
+                "nightlyRate",
+                "minStayNights"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "mealPlan",
+          "mealChargePerPerson",
+          "gstEnabled",
+          "rooms",
+          "overrides"
+        ],
+        "additionalProperties": false
+      },
+      "UpdateMealChargeDto": {
+        "type": "object",
+        "properties": {
+          "mealChargePerPerson": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000000
+          }
+        },
+        "required": [
+          "mealChargePerPerson"
+        ]
+      },
+      "UpdateRoomRatesDto": {
+        "type": "object",
+        "properties": {
+          "baseRate": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000000,
+            "nullable": true
+          },
+          "weekendRate": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000000,
+            "nullable": true
+          },
+          "extraGuestCharge": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000000
+          }
+        },
+        "required": [
+          "baseRate",
+          "weekendRate",
+          "extraGuestCharge"
+        ]
+      },
+      "CreateRateOverrideDto": {
+        "type": "object",
+        "properties": {
+          "roomIds": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "nightlyRate": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000000
+          },
+          "minStayNights": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30,
+            "nullable": true
+          }
+        },
+        "required": [
+          "roomIds",
+          "startDate",
+          "endDate",
+          "nightlyRate",
+          "minStayNights"
+        ]
       },
       "ApiErrorDto": {
         "type": "object",
@@ -369,7 +2352,12 @@
                   "NOT_FOUND",
                   "CONFLICT",
                   "RATE_LIMITED",
-                  "INTERNAL_ERROR"
+                  "INTERNAL_ERROR",
+                  "PROPERTY_INCOMPLETE",
+                  "INVALID_STATUS_TRANSITION",
+                  "MEDIA_LIMIT_REACHED",
+                  "ROOM_LIMIT_REACHED",
+                  "RATE_OVERRIDE_CONFLICT"
                 ]
               },
               "message": {

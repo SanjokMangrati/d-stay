@@ -18,14 +18,20 @@ import type {
 } from 'msw';
 
 import type {
-  PropertyListDtoOutput,
-  PropertySummaryDtoOutput
+  PropertyDetailDtoOutput,
+  PropertyListDtoOutput
 } from '../../models';
 
 
-export const getPropertiesListResponseMock = (overrideResponse: Partial<Extract<PropertyListDtoOutput, object>> = {}): PropertyListDtoOutput => ({properties: Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), name: faker.string.alpha({length: {min: 10, max: 20}}), membershipRole: faker.helpers.arrayElement([faker.helpers.arrayElement(['OWNER','MANAGER','STAFF'] as const), null])})), ...overrideResponse})
+export const getPropertiesListResponseMock = (overrideResponse: Partial<Extract<PropertyListDtoOutput, object>> = {}): PropertyListDtoOutput => ({properties: Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), name: faker.string.alpha({length: {min: 10, max: 20}}), status: faker.helpers.arrayElement(['DRAFT','PENDING_REVIEW','PUBLISHED','REJECTED','SUSPENDED'] as const), membershipRole: faker.helpers.arrayElement([faker.helpers.arrayElement(['OWNER','MANAGER','STAFF'] as const), null])})), ...overrideResponse})
 
-export const getPropertiesFindOneResponseMock = (overrideResponse: Partial<Extract<PropertySummaryDtoOutput, object>> = {}): PropertySummaryDtoOutput => ({id: faker.string.uuid(), name: faker.string.alpha({length: {min: 10, max: 20}}), membershipRole: faker.helpers.arrayElement([faker.helpers.arrayElement(['OWNER','MANAGER','STAFF'] as const), null]), ...overrideResponse})
+export const getPropertiesCreateResponseMock = (overrideResponse: Partial<Extract<PropertyDetailDtoOutput, object>> = {}): PropertyDetailDtoOutput => ({id: faker.string.uuid(), name: faker.string.alpha({length: {min: 10, max: 20}}), status: faker.helpers.arrayElement(['DRAFT','PENDING_REVIEW','PUBLISHED','REJECTED','SUSPENDED'] as const), membershipRole: faker.helpers.arrayElement([faker.helpers.arrayElement(['OWNER','MANAGER','STAFF'] as const), null]), description: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), rejectionReason: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), latitude: faker.helpers.arrayElement([faker.number.float({min: -90, max: 90, fractionDigits: 2}), null]), longitude: faker.helpers.arrayElement([faker.number.float({min: -180, max: 180, fractionDigits: 2}), null]), landmark: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), directions: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), city: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), district: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), state: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), checkInTime: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), checkOutTime: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), houseRules: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), amenities: faker.helpers.arrayElements(['PARKING','HOT_WATER','WIFI','GENERATOR','BONFIRE','PETS_ALLOWED'] as const), mealPlan: faker.helpers.arrayElement([faker.helpers.arrayElement(['ROOM_ONLY','BREAKFAST','BREAKFAST_DINNER','ALL_MEALS'] as const), null]), gstEnabled: faker.datatype.boolean(), gstin: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), homestayRegistrationNumber: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), missingFields: faker.helpers.arrayElements(['description','photos','rooms','location','city','district','state','checkInTime','checkOutTime','mealPlan','gstin'] as const), ...overrideResponse})
+
+export const getPropertiesFindOneResponseMock = (overrideResponse: Partial<Extract<PropertyDetailDtoOutput, object>> = {}): PropertyDetailDtoOutput => ({id: faker.string.uuid(), name: faker.string.alpha({length: {min: 10, max: 20}}), status: faker.helpers.arrayElement(['DRAFT','PENDING_REVIEW','PUBLISHED','REJECTED','SUSPENDED'] as const), membershipRole: faker.helpers.arrayElement([faker.helpers.arrayElement(['OWNER','MANAGER','STAFF'] as const), null]), description: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), rejectionReason: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), latitude: faker.helpers.arrayElement([faker.number.float({min: -90, max: 90, fractionDigits: 2}), null]), longitude: faker.helpers.arrayElement([faker.number.float({min: -180, max: 180, fractionDigits: 2}), null]), landmark: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), directions: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), city: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), district: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), state: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), checkInTime: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), checkOutTime: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), houseRules: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), amenities: faker.helpers.arrayElements(['PARKING','HOT_WATER','WIFI','GENERATOR','BONFIRE','PETS_ALLOWED'] as const), mealPlan: faker.helpers.arrayElement([faker.helpers.arrayElement(['ROOM_ONLY','BREAKFAST','BREAKFAST_DINNER','ALL_MEALS'] as const), null]), gstEnabled: faker.datatype.boolean(), gstin: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), homestayRegistrationNumber: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), missingFields: faker.helpers.arrayElements(['description','photos','rooms','location','city','district','state','checkInTime','checkOutTime','mealPlan','gstin'] as const), ...overrideResponse})
+
+export const getPropertiesUpdateResponseMock = (overrideResponse: Partial<Extract<PropertyDetailDtoOutput, object>> = {}): PropertyDetailDtoOutput => ({id: faker.string.uuid(), name: faker.string.alpha({length: {min: 10, max: 20}}), status: faker.helpers.arrayElement(['DRAFT','PENDING_REVIEW','PUBLISHED','REJECTED','SUSPENDED'] as const), membershipRole: faker.helpers.arrayElement([faker.helpers.arrayElement(['OWNER','MANAGER','STAFF'] as const), null]), description: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), rejectionReason: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), latitude: faker.helpers.arrayElement([faker.number.float({min: -90, max: 90, fractionDigits: 2}), null]), longitude: faker.helpers.arrayElement([faker.number.float({min: -180, max: 180, fractionDigits: 2}), null]), landmark: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), directions: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), city: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), district: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), state: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), checkInTime: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), checkOutTime: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), houseRules: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), amenities: faker.helpers.arrayElements(['PARKING','HOT_WATER','WIFI','GENERATOR','BONFIRE','PETS_ALLOWED'] as const), mealPlan: faker.helpers.arrayElement([faker.helpers.arrayElement(['ROOM_ONLY','BREAKFAST','BREAKFAST_DINNER','ALL_MEALS'] as const), null]), gstEnabled: faker.datatype.boolean(), gstin: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), homestayRegistrationNumber: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), missingFields: faker.helpers.arrayElements(['description','photos','rooms','location','city','district','state','checkInTime','checkOutTime','mealPlan','gstin'] as const), ...overrideResponse})
+
+export const getPropertiesSubmitForReviewResponseMock = (overrideResponse: Partial<Extract<PropertyDetailDtoOutput, object>> = {}): PropertyDetailDtoOutput => ({id: faker.string.uuid(), name: faker.string.alpha({length: {min: 10, max: 20}}), status: faker.helpers.arrayElement(['DRAFT','PENDING_REVIEW','PUBLISHED','REJECTED','SUSPENDED'] as const), membershipRole: faker.helpers.arrayElement([faker.helpers.arrayElement(['OWNER','MANAGER','STAFF'] as const), null]), description: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), rejectionReason: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), latitude: faker.helpers.arrayElement([faker.number.float({min: -90, max: 90, fractionDigits: 2}), null]), longitude: faker.helpers.arrayElement([faker.number.float({min: -180, max: 180, fractionDigits: 2}), null]), landmark: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), directions: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), city: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), district: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), state: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), checkInTime: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), checkOutTime: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), houseRules: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), amenities: faker.helpers.arrayElements(['PARKING','HOT_WATER','WIFI','GENERATOR','BONFIRE','PETS_ALLOWED'] as const), mealPlan: faker.helpers.arrayElement([faker.helpers.arrayElement(['ROOM_ONLY','BREAKFAST','BREAKFAST_DINNER','ALL_MEALS'] as const), null]), gstEnabled: faker.datatype.boolean(), gstin: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), homestayRegistrationNumber: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), missingFields: faker.helpers.arrayElements(['description','photos','rooms','location','city','district','state','checkInTime','checkOutTime','mealPlan','gstin'] as const), ...overrideResponse})
 
 
 export const getPropertiesListMockHandler = (overrideResponse?: PropertyListDtoOutput | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<PropertyListDtoOutput> | PropertyListDtoOutput), options?: RequestHandlerOptions) => {
@@ -40,7 +46,19 @@ export const getPropertiesListMockHandler = (overrideResponse?: PropertyListDtoO
   }, options)
 }
 
-export const getPropertiesFindOneMockHandler = (overrideResponse?: PropertySummaryDtoOutput | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<PropertySummaryDtoOutput> | PropertySummaryDtoOutput), options?: RequestHandlerOptions) => {
+export const getPropertiesCreateMockHandler = (overrideResponse?: PropertyDetailDtoOutput | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<PropertyDetailDtoOutput> | PropertyDetailDtoOutput), options?: RequestHandlerOptions) => {
+  return http.post('*/properties', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getPropertiesCreateResponseMock(),
+      { status: 201
+      })
+  }, options)
+}
+
+export const getPropertiesFindOneMockHandler = (overrideResponse?: PropertyDetailDtoOutput | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<PropertyDetailDtoOutput> | PropertyDetailDtoOutput), options?: RequestHandlerOptions) => {
   return http.get('*/properties/:propertyId', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
 
 
@@ -51,7 +69,34 @@ export const getPropertiesFindOneMockHandler = (overrideResponse?: PropertySumma
       })
   }, options)
 }
+
+export const getPropertiesUpdateMockHandler = (overrideResponse?: PropertyDetailDtoOutput | ((info: Parameters<Parameters<typeof http.patch>[1]>[0]) => Promise<PropertyDetailDtoOutput> | PropertyDetailDtoOutput), options?: RequestHandlerOptions) => {
+  return http.patch('*/properties/:propertyId', async (info: Parameters<Parameters<typeof http.patch>[1]>[0]) => {
+
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getPropertiesUpdateResponseMock(),
+      { status: 200
+      })
+  }, options)
+}
+
+export const getPropertiesSubmitForReviewMockHandler = (overrideResponse?: PropertyDetailDtoOutput | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<PropertyDetailDtoOutput> | PropertyDetailDtoOutput), options?: RequestHandlerOptions) => {
+  return http.post('*/properties/:propertyId/submit', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getPropertiesSubmitForReviewResponseMock(),
+      { status: 200
+      })
+  }, options)
+}
 export const getPropertiesMock = () => [
   getPropertiesListMockHandler(),
-  getPropertiesFindOneMockHandler()
+  getPropertiesCreateMockHandler(),
+  getPropertiesFindOneMockHandler(),
+  getPropertiesUpdateMockHandler(),
+  getPropertiesSubmitForReviewMockHandler()
 ]

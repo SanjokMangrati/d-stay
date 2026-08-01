@@ -31,6 +31,58 @@ enum PropertyRole {
   STAFF
 }
 
+/// Review lifecycle. Only guest-facing visibility depends on this — a host runs
+/// rooms, rates, the calendar and bookings on a DRAFT property.
+enum PropertyStatus {
+  DRAFT
+  PENDING_REVIEW
+  PUBLISHED
+  REJECTED
+  SUSPENDED
+}
+
+/// What the tariff includes. Drives the per-person meal charge in the quote.
+enum MealPlan {
+  ROOM_ONLY
+  BREAKFAST
+  BREAKFAST_DINNER
+  ALL_MEALS
+}
+
+/// A fixed checklist rather than free text, because guest-side filtering later
+/// has to match on it. Room-level amenities are a separate enum.
+enum PropertyAmenity {
+  PARKING
+  HOT_WATER
+  WIFI
+  GENERATOR
+  BONFIRE
+  PETS_ALLOWED
+}
+
+/// What differs between the rooms of one homestay. Deliberately short: a fixed
+/// list only earns its place if a guest would filter on it, and everything else
+/// belongs in the room's description.
+enum RoomAmenity {
+  ATTACHED_BATHROOM
+  BALCONY
+  HEATER
+  AIR_CONDITIONING
+}
+
+/// Where an image is in the upload pipeline. A row exists from the moment the
+/// API hands out a presigned URL, so an upload the host abandoned is a row the
+/// sweep can find rather than an object nothing knows about.
+enum MediaStatus {
+  /// Presigned, not yet confirmed uploaded. Swept if it stays this way.
+  PENDING
+  /// Bytes are in the bucket; derivatives and blurhash are queued.
+  PROCESSING
+  READY
+  /// Derivative generation failed. The original is still displayable.
+  FAILED
+}
+
 /// Identity. Better Auth owns `id`, `name`, `email`, `emailVerified`, `image`
 /// and the timestamps; everything else is a d-stay profile field declared to
 /// Better Auth through `user.additionalFields`.
@@ -110,18 +162,176 @@ model Verification {
   @@map("verifications")
 }
 
-/// The homestay. Setup fields (geo, amenities, rates, GST, status) arrive with
-/// the properties module; what exists here is the identity that memberships and
-/// the property-scoped guard hang off.
+/// The homestay. Everything but `name` is optional because a property is created
+/// as a draft and filled in over several sittings; what a *submittable* property
+/// needs is decided by the completeness check, not by column nullability.
+/// Rooms and photos join this model with their own modules.
 model Property {
-  id        String   @id @default(uuid(7))
-  name      String
+  id          String         @id @default(uuid(7))
+  name        String
+  description String?
+  status      PropertyStatus @default(DRAFT)
+  /// Written when an operator rejects, cleared on resubmission — the host has to
+  /// be able to read why after the notification is gone.
+  rejectionReason String? @map("rejection_reason")
+
+  /// A map pin, because a village homestay has no usable street address. Both
+  /// coordinates are set together or neither is; the DB enforces that.
+  latitude   Float?
+  longitude  Float?
+  landmark   String?
+  directions String?
+  city       String?
+  district   String?
+  state      String?
+
+  /// `HH:MM` local time, 24-hour. A `time` column would arrive in JS as a
+  /// `Date` on an arbitrary day, which is worse than a checked string.
+  checkInTime  String? @map("check_in_time") @db.VarChar(5)
+  checkOutTime String? @map("check_out_time") @db.VarChar(5)
+
+  houseRules String?           @map("house_rules")
+  amenities  PropertyAmenity[]
+  mealPlan   MealPlan?         @map("meal_plan")
+  /// Paise per person per night, charged on every plan but ROOM_ONLY. It sits on
+  /// the property rather than the room because the kitchen cooks for the house.
+  mealChargePerPerson Int      @default(0) @map("meal_charge_per_person")
+
+  gstEnabled                 Boolean @default(false) @map("gst_enabled")
+  gstin                      String?
+  homestayRegistrationNumber String? @map("homestay_registration_number")
+
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   memberships PropertyMembership[]
+  media       MediaAsset[]
+  rooms       Room[]
 
+  @@index([status])
   @@map("properties")
+}
+
+/// What a guest actually books. Named the way the family names it — "Tulsi Room",
+/// "the attic" — not by a hotel's room-type taxonomy: this product has no type
+/// pools, only individual rooms.
+///
+/// Beds are counted rather than described, so occupancy can be sanity-checked and
+/// the guest app can filter later; anything a count cannot carry goes in the
+/// description. Rates join this model with the pricing module.
+model Room {
+  id          String  @id @default(uuid(7))
+  propertyId  String  @map("property_id")
+  name        String
+  description String?
+
+  doubleBeds      Int @default(0) @map("double_beds")
+  singleBeds      Int @default(0) @map("single_beds")
+  /// Floor mattresses a host adds for children or an extra guest.
+  extraMattresses Int @default(0) @map("extra_mattresses")
+
+  /// What the base rate covers; guests beyond it are charged per head.
+  standardOccupancy Int @map("standard_occupancy")
+  /// The hard cap. Never below the standard occupancy — the database enforces it.
+  maxOccupancy      Int @map("max_occupancy")
+
+  /// Paise per night. Null until the host prices the room; a room without a rate
+  /// cannot be quoted, which is a state the pricing screen shows rather than a
+  /// state the database forbids — rooms are created before rates are decided.
+  baseRate         Int? @map("base_rate")
+  /// Friday and Saturday nights. Null means those nights cost the base rate.
+  weekendRate      Int? @map("weekend_rate")
+  /// Paise per night for each guest above the standard occupancy.
+  extraGuestCharge Int  @default(0) @map("extra_guest_charge")
+
+  amenities RoomAmenity[]
+  sortOrder Int           @map("sort_order")
+  /// A room out of service stops being bookable; its history is untouched, which
+  /// is why this exists instead of deleting the row.
+  isActive  Boolean       @default(true) @map("is_active")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  property  Property       @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  media     MediaAsset[]
+  overrides RateOverride[]
+
+  /// Not a second identity — it is what lets a photo's foreign key carry both
+  /// columns, so the database refuses a photo pointing at a room of a different
+  /// property.
+  @@unique([id, propertyId])
+  @@index([propertyId, sortOrder])
+  @@map("rooms")
+}
+
+/// A nightly rate that stands in for the room's own over a run of nights — peak
+/// season, a festival week, a long weekend. Deleting the row is how a host goes
+/// back to their base rate, so there is no "unset" state to model.
+///
+/// Both dates are nights the override covers, first and last inclusive. That is
+/// deliberately not the half-open range a stay uses: a host setting a rate is
+/// thinking about nights, not about when a guest walks out.
+model RateOverride {
+  id         String @id @default(uuid(7))
+  propertyId String @map("property_id")
+  roomId     String @map("room_id")
+
+  startDate DateTime @map("start_date") @db.Date
+  endDate   DateTime @map("end_date") @db.Date
+
+  nightlyRate Int @map("nightly_rate")
+  /// How many nights a stay touching this range must run to. Null means no rule.
+  minStayNights Int? @map("min_stay_nights")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  /// The foreign key carries the property as well, so the database refuses an
+  /// override written against a room of another homestay.
+  room Room @relation(fields: [roomId, propertyId], references: [id, propertyId], onDelete: Cascade)
+
+  @@index([propertyId, startDate])
+  @@map("rate_overrides")
+}
+
+/// A photo of the property. Bytes never pass through the API: it signs an upload
+/// URL, the browser writes to object storage, and this row is what makes the
+/// object part of the listing.
+///
+/// Derivative keys are not stored — they are `{storage_key}/{variant}.webp` by
+/// construction, so a rename of the scheme is one function rather than a
+/// backfill.
+model MediaAsset {
+  id          String      @id @default(uuid(7))
+  propertyId  String      @map("property_id")
+  /// Absent for a photo of the property itself. Present for a photo of one of
+  /// its rooms — the two are separate listings with separate covers.
+  roomId      String?     @map("room_id")
+  /// The original object. Unique because it is derived from `id`, and a
+  /// collision would mean two rows fighting over one object.
+  storageKey  String      @unique @map("storage_key")
+  contentType String      @map("content_type")
+  byteSize    Int         @map("byte_size")
+  /// Measured by the browser at upload; absent until the upload is confirmed.
+  width       Int?
+  height      Int?
+  /// Written by the derivative worker. The placeholder a host sees while a photo
+  /// loads on a rural connection.
+  blurhash    String?
+  status      MediaStatus @default(PENDING)
+  sortOrder   Int         @map("sort_order")
+  isCover     Boolean     @default(false) @map("is_cover")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  room     Room?    @relation(fields: [roomId, propertyId], references: [id, propertyId], onDelete: Cascade)
+
+  @@index([propertyId, sortOrder])
+  @@index([roomId, sortOrder])
+  @@map("media_assets")
 }
 
 /// Authorization for everything property-scoped. `isActive` revokes access

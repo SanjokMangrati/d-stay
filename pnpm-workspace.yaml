@@ -19,3 +19,6 @@ allowBuilds:
   cpu-features: false
   protobufjs: false
   ssh2: false
+  # BullMQ's optional native msgpack encoder. The JS fallback is what it ships
+  # with, and job payloads here are a handful of ids.
+  msgpackr-extract: false

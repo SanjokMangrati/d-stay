@@ -29,7 +29,10 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1098.0",
+    "@aws-sdk/s3-request-presigner": "^3.1098.0",
     "@d-stay/domain": "workspace:*",
+    "@nestjs/bullmq": "^11.0.4",
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
@@ -38,13 +41,17 @@
     "@prisma/client": "^7.9.0",
     "@thallesp/nestjs-better-auth": "^2.7.0",
     "better-auth": "^1.6.25",
+    "blurhash": "^2.0.5",
+    "bullmq": "^5.81.3",
     "dotenv": "^17.4.2",
+    "ioredis": "^5.11.1",
     "nestjs-pino": "^4.6.1",
     "nestjs-zod": "^5.5.0",
     "pino": "^10.3.1",
     "pino-http": "^11.0.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
+    "sharp": "^0.35.3",
     "zod": "^4.4.3"
   },
   "devDependencies": {

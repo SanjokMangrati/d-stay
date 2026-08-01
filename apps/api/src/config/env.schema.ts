@@ -32,6 +32,27 @@ export const envSchema = z.object({
   BETTER_AUTH_SECRET: z.string().min(32),
   GOOGLE_CLIENT_ID: z.string().min(1),
   GOOGLE_CLIENT_SECRET: z.string().min(1),
+  /** Backs every queue: derivative generation, orphan sweeps, and what follows. */
+  REDIS_URL: z.url(),
+  /**
+   * S3-compatible object storage: MinIO locally, Cloudflare R2 in production.
+   * Path style is what MinIO needs; R2 and S3 take virtual-hosted style.
+   */
+  S3_ENDPOINT: z.url(),
+  S3_REGION: z.string().min(1).default('auto'),
+  S3_BUCKET: z.string().min(1),
+  S3_ACCESS_KEY_ID: z.string().min(1),
+  S3_SECRET_ACCESS_KEY: z.string().min(1),
+  S3_FORCE_PATH_STYLE: z
+    .enum(['true', 'false'])
+    .default('false')
+    .transform((value) => value === 'true'),
+  /**
+   * Where a browser reads the bucket from. Separate from `S3_ENDPOINT` because
+   * in production that is an authenticated API endpoint and this is a CDN
+   * hostname; they are the same host only by coincidence in local dev.
+   */
+  MEDIA_PUBLIC_BASE_URL: z.url(),
 });
 
 export type Env = z.infer<typeof envSchema>;

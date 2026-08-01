@@ -59,4 +59,28 @@ export class AppConfig {
       clientSecret: this.env.GOOGLE_CLIENT_SECRET,
     };
   }
+
+  get redisUrl(): string {
+    return this.env.REDIS_URL;
+  }
+
+  get objectStorage(): {
+    endpoint: string;
+    region: string;
+    bucket: string;
+    accessKeyId: string;
+    secretAccessKey: string;
+    forcePathStyle: boolean;
+    publicBaseUrl: string;
+  } {
+    return {
+      endpoint: this.env.S3_ENDPOINT,
+      region: this.env.S3_REGION,
+      bucket: this.env.S3_BUCKET,
+      accessKeyId: this.env.S3_ACCESS_KEY_ID,
+      secretAccessKey: this.env.S3_SECRET_ACCESS_KEY,
+      forcePathStyle: this.env.S3_FORCE_PATH_STYLE,
+      publicBaseUrl: this.env.MEDIA_PUBLIC_BASE_URL,
+    };
+  }
 }

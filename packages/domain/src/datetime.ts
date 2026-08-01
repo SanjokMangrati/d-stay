@@ -53,6 +53,45 @@ export function todayStayDate(now: Date = new Date()): StayDate {
 }
 
 /**
+ * The nights a stay occupies. Stay ranges are half-open — `[checkIn, checkOut)` —
+ * so a guest leaving on the 16th does not hold the night of the 15th, and the
+ * next guest may arrive that same morning.
+ */
+export function nightsBetween(checkIn: StayDate, checkOut: StayDate): StayDate[] {
+  const last = parseStayDate(checkOut).getTime();
+  const nights: StayDate[] = [];
+
+  for (
+    let night = parseStayDate(checkIn).getTime();
+    night < last;
+    night += MILLISECONDS_PER_DAY
+  ) {
+    nights.push(new Date(night).toISOString().slice(0, 10));
+  }
+
+  return nights;
+}
+
+/** The stay date `count` days later. Negative counts walk backwards. */
+export function addDays(date: StayDate, count: number): StayDate {
+  return new Date(parseStayDate(date).getTime() + count * MILLISECONDS_PER_DAY)
+    .toISOString()
+    .slice(0, 10);
+}
+
+/** Whole days between two stay dates. Negative when they are the wrong way round. */
+export function daysBetween(from: StayDate, to: StayDate): number {
+  return (
+    (parseStayDate(to).getTime() - parseStayDate(from).getTime()) /
+    MILLISECONDS_PER_DAY
+  );
+}
+
+// Stay dates are parsed at UTC midnight, where every day is exactly this long —
+// the product timezone has no DST, and this arithmetic never crosses one anyway.
+const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
+
+/**
  * Parses to a UTC-midnight Date so that formatting and comparison are stable.
  * Only for turning a wire value into something `Intl`/`Date` arithmetic accepts.
  */

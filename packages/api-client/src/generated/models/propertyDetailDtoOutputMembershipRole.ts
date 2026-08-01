@@ -9,10 +9,10 @@
 /**
  * @nullable
  */
-export type PropertySummaryDtoOutputMembershipRole = typeof PropertySummaryDtoOutputMembershipRole[keyof typeof PropertySummaryDtoOutputMembershipRole] | null;
+export type PropertyDetailDtoOutputMembershipRole = typeof PropertyDetailDtoOutputMembershipRole[keyof typeof PropertyDetailDtoOutputMembershipRole] | null;
 
 
-export const PropertySummaryDtoOutputMembershipRole = {
+export const PropertyDetailDtoOutputMembershipRole = {
   OWNER: 'OWNER',
   MANAGER: 'MANAGER',
   STAFF: 'STAFF',

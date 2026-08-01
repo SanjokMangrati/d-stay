@@ -1,6 +1,7 @@
+import { propertiesList } from "@d-stay/api-client/endpoints/properties";
 import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
-import { SignOutButton } from "./sign-out-button";
+import { AppShell } from "./app-shell";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { requireHost } from "@/lib/auth/session";
 
@@ -10,31 +11,22 @@ import { requireHost } from "@/lib/auth/session";
  * than a cookie read — `proxy.ts` only makes the signed-out case fast.
  */
 export default async function AppLayout({ children }: { children: ReactNode }) {
+  // Sequential on purpose: an expired session must redirect out of here, not
+  // fail on a parallel properties call that was never going to be authorised.
   const host = await requireHost();
-  const t = await getTranslations("shell");
+  const [{ properties }, t] = await Promise.all([
+    propertiesList(),
+    getTranslations("shell"),
+  ]);
 
   return (
-    <div className="flex min-h-dvh flex-col">
-      <header className="border-border flex items-center justify-between gap-3 border-b px-4 py-3">
-        <div className="min-w-0">
-          <p className="truncate text-sm font-medium">
-            {t("signedInAs", { name: host.name })}
-          </p>
-          {host.role === "ADMIN" && (
-            <p className="text-muted-foreground text-xs">{t("adminBadge")}</p>
-          )}
-        </div>
-        <SignOutButton />
-      </header>
-
-      <main className="flex-1 px-4 py-6">
-        {!host.emailVerified && (
-          <Alert className="mb-6">
-            <AlertTitle>{t("unverifiedEmail")}</AlertTitle>
-          </Alert>
-        )}
-        {children}
-      </main>
-    </div>
+    <AppShell host={host} properties={properties}>
+      {!host.emailVerified && (
+        <Alert className="mb-6">
+          <AlertTitle>{t("unverifiedEmail")}</AlertTitle>
+        </Alert>
+      )}
+      {children}
+    </AppShell>
   );
 }

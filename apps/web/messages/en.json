@@ -1,86 +1,408 @@
 {
-  "app": {
-    "name": "d-stay",
-    "tagline": "Your homestay, in one place."
-  },
-  "auth": {
-    "hero": {
-      "title": "Go ahead and set up your homestay",
-      "subtitle": "Sign in or create an account to manage your bookings, calendar and rates."
-    },
-    "signIn": {
-      "tab": "Sign in",
-      "submit": "Sign in",
-      "submitting": "Signing in…",
-      "forgotPassword": "Forgot password?"
-    },
-    "signUp": {
-      "tab": "Sign up",
-      "submit": "Create account",
-      "submitting": "Creating your account…"
-    },
-    "forgotPassword": {
-      "title": "Reset your password",
-      "subtitle": "We will email you a link to choose a new password.",
-      "submit": "Send reset link",
-      "submitting": "Sending…",
-      "sent": "If that email has an account, a reset link is on its way.",
-      "backToSignIn": "Back to sign in"
-    },
-    "resetPassword": {
-      "title": "Choose a new password",
-      "subtitle": "You will be signed in once it is saved.",
-      "submit": "Save password",
-      "submitting": "Saving…",
-      "missingToken": "This reset link is incomplete. Request a new one.",
-      "requestNewLink": "Request a new link"
-    },
-    "fields": {
-      "name": "Your name",
-      "namePlaceholder": "Meera Rawat",
-      "email": "Email",
-      "emailPlaceholder": "you@example.com",
-      "phone": "Phone number",
-      "phonePlaceholder": "98765 43210",
-      "phoneHint": "So d-stay can reach you about your property.",
-      "password": "Password",
-      "newPassword": "New password",
-      "passwordHint": "At least 8 characters.",
-      "showPassword": "Show password",
-      "hidePassword": "Hide password"
-    },
-    "google": {
-      "continue": "Google",
-      "redirecting": "Opening Google…"
-    },
-    "continueWith": "Or continue with",
-    "signOut": "Sign out",
-    "validation": {
-      "nameRequired": "Enter your name.",
-      "emailInvalid": "Enter a valid email address.",
-      "phoneInvalid": "Enter an Indian mobile number, like 98765 43210.",
-      "passwordTooShort": "Use at least 8 characters.",
-      "passwordTooLong": "Use at most 128 characters."
-    },
-    "errors": {
-      "invalidCredentials": "That email and password do not match an account.",
-      "emailTaken": "An account already exists for that email. Sign in instead.",
-      "weakPassword": "Choose a longer password.",
-      "invalidToken": "That link has expired. Request a new one.",
-      "unreachable": "d-stay could not be reached. Check your connection and try again.",
-      "unexpected": "Something went wrong. Try again."
-    }
-  },
-  "shell": {
-    "signedInAs": "Signed in as {name}",
-    "properties": "Your properties",
-    "noProperties": "You have not added a property yet.",
-    "role": {
-      "OWNER": "Owner",
-      "MANAGER": "Manager",
-      "STAFF": "Staff"
-    },
-    "adminBadge": "Platform admin",
-    "unverifiedEmail": "Verify your email so you can recover this account."
-  }
+	"app": {
+		"name": "d-stay",
+		"tagline": "Your homestay, in one place."
+	},
+	"auth": {
+		"hero": {
+			"title": "Go ahead and set up your homestay",
+			"subtitle": "Sign in or create an account to manage your bookings, calendar and rates."
+		},
+		"signIn": {
+			"tab": "Sign in",
+			"submit": "Sign in",
+			"submitting": "Signing in…",
+			"forgotPassword": "Forgot password?"
+		},
+		"signUp": {
+			"tab": "Sign up",
+			"submit": "Create account",
+			"submitting": "Creating your account…"
+		},
+		"forgotPassword": {
+			"title": "Reset your password",
+			"subtitle": "We will email you a link to choose a new password.",
+			"submit": "Send reset link",
+			"submitting": "Sending…",
+			"sent": "If that email has an account, a reset link is on its way.",
+			"backToSignIn": "Back to sign in"
+		},
+		"resetPassword": {
+			"title": "Choose a new password",
+			"subtitle": "You will be signed in once it is saved.",
+			"submit": "Save password",
+			"submitting": "Saving…",
+			"missingToken": "This reset link is incomplete. Request a new one.",
+			"requestNewLink": "Request a new link"
+		},
+		"fields": {
+			"name": "Your name",
+			"namePlaceholder": "Meera Rawat",
+			"email": "Email",
+			"emailPlaceholder": "you@example.com",
+			"phone": "Phone number",
+			"phonePlaceholder": "98765 43210",
+			"phoneHint": "So d-stay can reach you about your property.",
+			"password": "Password",
+			"newPassword": "New password",
+			"passwordHint": "At least 8 characters.",
+			"showPassword": "Show password",
+			"hidePassword": "Hide password"
+		},
+		"google": {
+			"continue": "Google",
+			"redirecting": "Opening Google…"
+		},
+		"continueWith": "Or continue with",
+		"signOut": "Sign out",
+		"validation": {
+			"nameRequired": "Enter your name.",
+			"emailInvalid": "Enter a valid email address.",
+			"phoneInvalid": "Enter an Indian mobile number, like 98765 43210.",
+			"passwordTooShort": "Use at least 8 characters.",
+			"passwordTooLong": "Use at most 128 characters."
+		},
+		"errors": {
+			"invalidCredentials": "That email and password do not match an account.",
+			"emailTaken": "An account already exists for that email. Sign in instead.",
+			"weakPassword": "Choose a longer password.",
+			"invalidToken": "That link has expired. Request a new one.",
+			"unreachable": "d-stay could not be reached. Check your connection and try again.",
+			"unexpected": "Something went wrong. Try again."
+		}
+	},
+	"errors": {
+		"unexpected": "Something went wrong. Try again.",
+		"unreachable": "d-stay could not be reached. Check your connection and try again.",
+		"validationFailed": "Check the highlighted fields and try again.",
+		"forbidden": "You do not have access to do that.",
+		"notFound": "That is no longer there.",
+		"propertyIncomplete": "Some details are still missing. Finish them below and submit again.",
+		"invalidStatusTransition": "That is not possible from where this property stands now.",
+		"mediaLimitReached": "You have as many photos as we can hold. Delete one to add another.",
+		"roomLimitReached": "You have as many rooms as we can hold. Delete one to add another."
+	},
+	"property": {
+		"new": {
+			"title": "Add your property",
+			"subtitle": "Start with the name. You can fill in the rest whenever you have a minute.",
+			"submit": "Create property",
+			"submitting": "Creating…"
+		},
+		"setup": {
+			"subtitle": "Your work is saved as you go, so you can leave and come back.",
+			"overviewSubtitle": "What you have told us about your property.",
+			"progress": "Setup progress",
+			"stepCount": "Step {current} of {total}",
+			"steps": {
+				"basics": "The basics",
+				"location": "Where is your property?",
+				"stay": "Check-in and meals",
+				"house": "Your home and rules",
+				"photos": "Photos",
+				"compliance": "GST and registration",
+				"review": "Ready for review"
+			},
+			"back": "Back",
+			"continue": "Continue",
+			"backToOverview": "Overview",
+			"saveAndContinue": "Save and continue",
+			"saving": "Saving…"
+		},
+		"summary": {
+			"edit": "Edit",
+			"editSection": "Edit {section}",
+			"notSet": "Not set yet",
+			"pin": "Map pin",
+			"gst": "GST",
+			"gstOn": "You charge GST",
+			"gstOff": "You do not charge GST"
+		},
+		"review": {
+			"currentStatus": "Status",
+			"rejected": "This was sent back",
+			"addRooms": "Add rooms",
+			"submit": "Submit for review",
+			"submitting": "Submitting…",
+			"notSubmittable": {
+				"PENDING_REVIEW": "We are looking at your property. You can keep taking bookings meanwhile.",
+				"PUBLISHED": "Your property is live for guests.",
+				"SUSPENDED": "This property is suspended. Contact d-stay to sort it out.",
+				"DRAFT": "",
+				"REJECTED": ""
+			}
+		},
+		"photos": {
+			"hint": "The first photo is what a guest sees first. Add the view, the rooms and the outside."
+		},
+		"checklist": {
+			"description": "A description of your homestay",
+			"photos": "At least one photo",
+			"rooms": "At least one room",
+			"location": "Your location on the map",
+			"city": "City or village",
+			"district": "District",
+			"state": "State",
+			"checkInTime": "Check-in time",
+			"checkOutTime": "Check-out time",
+			"mealPlan": "What your tariff includes",
+			"gstin": "Your GSTIN"
+		},
+		"fields": {
+			"name": "Property name",
+			"namePlaceholder": "Deodar House",
+			"nameHint": "The name your guests will see.",
+			"description": "About your homestay",
+			"descriptionPlaceholder": "A four-room family homestay in a deodar grove above the village.",
+			"descriptionHint": "A few lines about the place and what a stay is like.",
+			"landmark": "Landmark",
+			"landmarkPlaceholder": "Above the Shiva temple",
+			"directions": "How to reach you",
+			"directionsHint": "Written the way you would tell it on the phone.",
+			"city": "City or village",
+			"district": "District",
+			"state": "State",
+			"checkInTime": "Check-in",
+			"checkOutTime": "Check-out",
+			"mealPlan": "What your tariff includes",
+			"mealPlanPlaceholder": "Choose a meal plan",
+			"mealPlanHint": "Meals are charged per person per night in your quotes.",
+			"amenities": "What your property offers",
+			"houseRules": "House rules",
+			"houseRulesPlaceholder": "Quiet after 10pm. No smoking indoors.",
+			"houseRulesHint": "Anything a guest should know before they arrive.",
+			"gstEnabled": "I charge GST",
+			"gstEnabledHint": "GST is worked out per night from that night's tariff.",
+			"gstin": "GSTIN",
+			"gstinPlaceholder": "27AAPFU0939F1ZV",
+			"homestayRegistrationNumber": "Homestay registration number",
+			"homestayRegistrationNumberHint": "Your state homestay registration, if you have one."
+		},
+		"location": {
+			"mapLabel": "Map of your property's location",
+			"dropPin": "Tap the map to drop a pin on your property.",
+			"pinned": "Pinned at {latitude}, {longitude}. Drag the pin to move it.",
+			"useCurrent": "Use my current location",
+			"locating": "Finding you…",
+			"denied": "Your phone did not share its location. Drop the pin on the map instead."
+		},
+		"status": {
+			"DRAFT": "Draft",
+			"PENDING_REVIEW": "In review",
+			"PUBLISHED": "Published",
+			"REJECTED": "Sent back",
+			"SUSPENDED": "Suspended"
+		},
+		"mealPlan": {
+			"ROOM_ONLY": "Room only",
+			"BREAKFAST": "Breakfast",
+			"BREAKFAST_DINNER": "Breakfast and dinner",
+			"ALL_MEALS": "All meals"
+		},
+		"amenity": {
+			"PARKING": "Parking",
+			"HOT_WATER": "Hot water",
+			"WIFI": "Wifi",
+			"GENERATOR": "Generator",
+			"BONFIRE": "Bonfire",
+			"PETS_ALLOWED": "Pets allowed"
+		},
+		"validation": {
+			"nameRequired": "Enter a name for your property.",
+			"tooLong": "That is longer than we can store.",
+			"timeInvalid": "Enter a time like 12:00.",
+			"gstinInvalid": "That is not a GSTIN. It looks like 27AAPFU0939F1ZV — two digits, five letters, four digits, then four more characters.",
+			"coordinatePair": "Set both latitude and longitude, or neither."
+		}
+	},
+	"shell": {
+		"signedInAs": "Signed in as {name}",
+		"properties": "Your properties",
+		"addProperty": "Add a property",
+		"nav": {
+			"today": "Today",
+			"calendar": "Calendar",
+			"bookings": "Bookings",
+			"property": "Property"
+		},
+		"role": {
+			"OWNER": "Owner",
+			"MANAGER": "Manager",
+			"STAFF": "Staff"
+		},
+		"adminBadge": "Platform admin",
+		"unverifiedEmail": "Verify your email so you can recover this account."
+	},
+	"photos": {
+		"add": "Add photos",
+		"uploading": "Uploading…",
+		"empty": "No photos yet.",
+		"cover": "Cover",
+		"actions": "Photo options",
+		"makeCover": "Make cover",
+		"moveEarlier": "Move earlier",
+		"moveLater": "Move later",
+		"remove": "Delete photo"
+	},
+	"room": {
+		"title": "Rooms",
+		"subtitle": "The rooms a guest can book, in the order you think about them.",
+		"manage": "Rooms",
+		"empty": "No rooms yet.",
+		"roomCount": "{active} of {total} bookable",
+		"add": "Add a room",
+		"edit": "Edit",
+		"inactive": "Out of service",
+		"actions": "Options for {room}",
+		"moveUp": "Move up",
+		"moveDown": "Move down",
+		"remove": "Delete room",
+		"confirmDelete": "Delete this room? Its details are gone for good. To stop taking bookings without losing it, switch it out of service instead.",
+		"confirmDeleteAction": "Delete",
+		"occupancySummary": "Sleeps {standard}, up to {max}",
+		"photoCount": "{count, plural, one {# photo} other {# photos}}",
+		"noPhotos": "No photos yet",
+		"beds": {
+			"double": "{count, plural, one {# double bed} other {# double beds}}",
+			"single": "{count, plural, one {# single bed} other {# single beds}}",
+			"mattress": "{count, plural, one {# extra mattress} other {# extra mattresses}}",
+			"none": "No beds set"
+		},
+		"newTitle": "Add a room",
+		"editTitle": "Edit room",
+		"photosTitle": "Photos of this room",
+		"photosHint": "Guests see these on the room itself, separately from your property photos.",
+		"form": {
+			"save": "Save room",
+			"saving": "Saving…",
+			"cancel": "Cancel"
+		},
+		"fields": {
+			"name": "Room name",
+			"namePlaceholder": "Tulsi Room",
+			"nameHint": "The name your family already uses for it.",
+			"description": "About this room",
+			"descriptionPlaceholder": "First floor, the one with the valley view.",
+			"beds": "Beds",
+			"bedsHint": "What is actually in the room. Extra mattresses are the ones you put down when a family needs them.",
+			"doubleBeds": "Double",
+			"singleBeds": "Single",
+			"extraMattresses": "Mattresses",
+			"standardOccupancy": "Sleeps",
+			"standardOccupancyHint": "Guests included in the room rate.",
+			"maxOccupancy": "Maximum",
+			"amenities": "What this room has",
+			"isActive": "Bookable",
+			"isActiveHint": "Turn this off while the room is out of service. Past bookings are untouched."
+		},
+		"amenity": {
+			"ATTACHED_BATHROOM": "Attached bathroom",
+			"BALCONY": "Balcony",
+			"HEATER": "Heater",
+			"AIR_CONDITIONING": "Air conditioning"
+		},
+		"validation": {
+			"nameRequired": "Enter a name for this room.",
+			"tooLong": "That is longer than we can store.",
+			"occupancyOrder": "Maximum cannot be less than the number it sleeps."
+		}
+	},
+	"pricing": {
+		"title": "Rates",
+		"subtitle": "What a night costs, and the weeks that cost something else.",
+		"manage": "Rates",
+		"priced": "{priced} of {total} rooms priced",
+		"nonePriced": "No rooms priced yet",
+		"rooms": {
+			"title": "Nightly rates",
+			"hint": "The standing price of each room, before seasons and extra guests.",
+			"empty": "Add a room first — rates belong to rooms.",
+			"inactive": "Out of service",
+			"unpriced": "No rate set — this room cannot be quoted.",
+			"perNight": "{amount} a night",
+			"weekend": "{amount} on Friday and Saturday nights",
+			"noWeekendRate": "Weekends cost the same as weekdays",
+			"extraGuest": "{amount} a night for each guest above {standard}",
+			"noExtraGuestCharge": "No charge for extra guests",
+			"editRates": "Edit the rates for {room}"
+		},
+		"fields": {
+			"baseRate": "Nightly rate (₹)",
+			"baseRateHint": "What the room costs on an ordinary night.",
+			"weekendRate": "Friday and Saturday rate (₹)",
+			"weekendRateHint": "Leave blank to charge the same as any other night.",
+			"extraGuestCharge": "Extra guest, per night (₹)",
+			"extraGuestChargeHint": "Charged for each guest above {standard}."
+		},
+		"meals": {
+			"title": "Meals",
+			"hint": "Charged per person per night, on top of the room.",
+			"perPerson": "Per person, per night (₹)"
+		},
+		"overrides": {
+			"title": "Seasons",
+			"hint": "Nights that cost something other than your standing rate — peak season, festivals, a long weekend.",
+			"empty": "No seasons set. Every night costs your standing rate.",
+			"add": "Add a season",
+			"newTitle": "New season",
+			"save": "Set this rate",
+			"room": "{room} at {amount} a night",
+			"minStay": "Minimum {nights, plural, one {# night} other {# nights}}",
+			"remove": "Remove the season for {room}",
+			"fields": {
+				"rooms": "Which rooms",
+				"startDate": "First night",
+				"endDate": "Last night",
+				"endDateHint": "The last night at this rate.",
+				"nightlyRate": "Nightly rate (₹)",
+				"nightlyRateHint": "Replaces both the standing and the weekend rate.",
+				"minStay": "Minimum stay (nights)",
+				"minStayHint": "Optional. Leave blank to take any length of stay."
+			}
+		},
+		"preview": {
+			"title": "Price a stay",
+			"hint": "The same sum a booking will do, so you can quote a caller straight away.",
+			"room": "Room",
+			"checkIn": "Check in",
+			"checkOut": "Check out",
+			"adults": "Adults",
+			"children": "Children",
+			"pickDates": "Pick a check-out after the check-in.",
+			"unpriced": "This room has no rate yet, so it cannot be priced.",
+			"minStay": "This season needs a stay of at least {nights, plural, one {# night} other {# nights}}.",
+			"source": {
+				"override": "· season rate",
+				"weekend": "· weekend rate"
+			},
+			"extraGuests": "Extra guests",
+			"meals": "Meals",
+			"gst": "GST",
+			"total": "Total for {nights, plural, one {# night} other {# nights}}"
+		},
+		"form": {
+			"edit": "Edit",
+			"save": "Save",
+			"saving": "Saving…",
+			"cancel": "Cancel"
+		},
+		"validation": {
+			"amount": "Enter an amount in rupees.",
+			"date": "Pick a date.",
+			"dateOrder": "The last night cannot fall before the first.",
+			"minStay": "Enter a number of nights, or leave it blank."
+		}
+	},
+	"today": {
+		"title": "Today",
+		"empty": "Arrivals, departures and who is staying will show up here once you are taking bookings."
+	},
+	"calendar": {
+		"title": "Calendar",
+		"empty": "Your month calendar arrives with rooms and rates."
+	},
+	"bookings": {
+		"title": "Bookings",
+		"empty": "Every booking you take will be listed here."
+	}
 }

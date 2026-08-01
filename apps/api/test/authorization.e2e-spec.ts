@@ -1,7 +1,11 @@
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import type { App } from 'supertest/types';
-import { PropertyRole, UserRole } from '../generated/prisma/enums';
+import {
+  PropertyRole,
+  PropertyStatus,
+  UserRole,
+} from '../generated/prisma/enums';
 import { PROPERTY_ID_PARAM } from '../src/auth/property-access.guard';
 import { apiErrorSchema } from '../src/errors/api-error.schema';
 import { PrismaService } from '../src/prisma/prisma.service';
@@ -172,6 +176,7 @@ describe('authorization', () => {
           {
             id: expect.any(String) as string,
             name: 'Deodar House',
+            status: PropertyStatus.DRAFT,
             membershipRole: PropertyRole.OWNER,
           },
         ],

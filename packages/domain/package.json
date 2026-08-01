@@ -15,6 +15,10 @@
       "types": "./dist/datetime.d.ts",
       "default": "./dist/datetime.js"
     },
+    "./pricing": {
+      "types": "./dist/pricing.d.ts",
+      "default": "./dist/pricing.js"
+    },
     "./phone": {
       "types": "./dist/phone.d.ts",
       "default": "./dist/phone.js"

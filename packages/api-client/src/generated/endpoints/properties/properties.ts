@@ -6,24 +6,30 @@
  * OpenAPI spec version: 0.1.0
  */
 import {
+  useMutation,
   useQuery
 } from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
   DefinedUseQueryResult,
+  MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
+  UseMutationOptions,
+  UseMutationResult,
   UseQueryOptions,
   UseQueryResult
 } from '@tanstack/react-query';
 
 import type {
   ApiErrorDto,
+  CreatePropertyDto,
+  PropertyDetailDtoOutput,
   PropertyListDtoOutput,
-  PropertySummaryDtoOutput
+  UpdatePropertyDto
 } from '../../models';
 
 import { apiFetch } from '../../../fetcher';
@@ -143,7 +149,71 @@ export function usePropertiesList<TData = Awaited<ReturnType<typeof propertiesLi
 
 
 
-export const getPropertiesFindOneUrl = (propertyId: string,) => {
+export const getPropertiesCreateUrl = () => {
+
+
+
+
+  return `/properties`
+}
+
+export const propertiesCreate = async (createPropertyDto: CreatePropertyDto, options?: Parameters<typeof apiFetch>[1]): Promise<PropertyDetailDtoOutput> => {
+
+  return apiFetch<PropertyDetailDtoOutput>(getPropertiesCreateUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(createPropertyDto)
+  }
+);}
+
+
+
+
+
+export const getPropertiesCreateMutationOptions = <TError = ErrorType<ApiErrorDto>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof propertiesCreate>>, TError,{data: CreatePropertyDto}, TContext>, request?: SecondParameter<typeof apiFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof propertiesCreate>>, TError,{data: CreatePropertyDto}, TContext> => {
+
+const mutationKey = ['propertiesCreate'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof propertiesCreate>>, {data: CreatePropertyDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  propertiesCreate(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PropertiesCreateMutationResult = NonNullable<Awaited<ReturnType<typeof propertiesCreate>>>
+    export type PropertiesCreateMutationBody = CreatePropertyDto
+    export type PropertiesCreateMutationError = ErrorType<ApiErrorDto>
+
+    export const usePropertiesCreate = <TError = ErrorType<ApiErrorDto>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof propertiesCreate>>, TError,{data: CreatePropertyDto}, TContext>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof propertiesCreate>>,
+        TError,
+        {data: CreatePropertyDto},
+        TContext
+      > => {
+      return useMutation(getPropertiesCreateMutationOptions(options), queryClient);
+    }
+    export const getPropertiesFindOneUrl = (propertyId: string,) => {
 
 
 
@@ -151,9 +221,9 @@ export const getPropertiesFindOneUrl = (propertyId: string,) => {
   return `/properties/${propertyId}`
 }
 
-export const propertiesFindOne = async (propertyId: string, options?: Parameters<typeof apiFetch>[1]): Promise<PropertySummaryDtoOutput> => {
+export const propertiesFindOne = async (propertyId: string, options?: Parameters<typeof apiFetch>[1]): Promise<PropertyDetailDtoOutput> => {
 
-  return apiFetch<PropertySummaryDtoOutput>(getPropertiesFindOneUrl(propertyId),
+  return apiFetch<PropertyDetailDtoOutput>(getPropertiesFindOneUrl(propertyId),
   {
     ...options,
     method: 'GET'
@@ -237,3 +307,132 @@ export function usePropertiesFindOne<TData = Awaited<ReturnType<typeof propertie
 
 
 
+export const getPropertiesUpdateUrl = (propertyId: string,) => {
+
+
+
+
+  return `/properties/${propertyId}`
+}
+
+export const propertiesUpdate = async (propertyId: string,
+    updatePropertyDto: UpdatePropertyDto, options?: Parameters<typeof apiFetch>[1]): Promise<PropertyDetailDtoOutput> => {
+
+  return apiFetch<PropertyDetailDtoOutput>(getPropertiesUpdateUrl(propertyId),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(updatePropertyDto)
+  }
+);}
+
+
+
+
+
+export const getPropertiesUpdateMutationOptions = <TError = ErrorType<ApiErrorDto>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof propertiesUpdate>>, TError,{propertyId: string;data: UpdatePropertyDto}, TContext>, request?: SecondParameter<typeof apiFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof propertiesUpdate>>, TError,{propertyId: string;data: UpdatePropertyDto}, TContext> => {
+
+const mutationKey = ['propertiesUpdate'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof propertiesUpdate>>, {propertyId: string;data: UpdatePropertyDto}> = (props) => {
+          const {propertyId,data} = props ?? {};
+
+          return  propertiesUpdate(propertyId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PropertiesUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof propertiesUpdate>>>
+    export type PropertiesUpdateMutationBody = UpdatePropertyDto
+    export type PropertiesUpdateMutationError = ErrorType<ApiErrorDto>
+
+    export const usePropertiesUpdate = <TError = ErrorType<ApiErrorDto>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof propertiesUpdate>>, TError,{propertyId: string;data: UpdatePropertyDto}, TContext>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof propertiesUpdate>>,
+        TError,
+        {propertyId: string;data: UpdatePropertyDto},
+        TContext
+      > => {
+      return useMutation(getPropertiesUpdateMutationOptions(options), queryClient);
+    }
+    export const getPropertiesSubmitForReviewUrl = (propertyId: string,) => {
+
+
+
+
+  return `/properties/${propertyId}/submit`
+}
+
+export const propertiesSubmitForReview = async (propertyId: string, options?: Parameters<typeof apiFetch>[1]): Promise<PropertyDetailDtoOutput> => {
+
+  return apiFetch<PropertyDetailDtoOutput>(getPropertiesSubmitForReviewUrl(propertyId),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getPropertiesSubmitForReviewMutationOptions = <TError = ErrorType<ApiErrorDto>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof propertiesSubmitForReview>>, TError,{propertyId: string}, TContext>, request?: SecondParameter<typeof apiFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof propertiesSubmitForReview>>, TError,{propertyId: string}, TContext> => {
+
+const mutationKey = ['propertiesSubmitForReview'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof propertiesSubmitForReview>>, {propertyId: string}> = (props) => {
+          const {propertyId} = props ?? {};
+
+          return  propertiesSubmitForReview(propertyId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PropertiesSubmitForReviewMutationResult = NonNullable<Awaited<ReturnType<typeof propertiesSubmitForReview>>>
+
+    export type PropertiesSubmitForReviewMutationError = ErrorType<ApiErrorDto>
+
+    export const usePropertiesSubmitForReview = <TError = ErrorType<ApiErrorDto>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof propertiesSubmitForReview>>, TError,{propertyId: string}, TContext>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof propertiesSubmitForReview>>,
+        TError,
+        {propertyId: string},
+        TContext
+      > => {
+      return useMutation(getPropertiesSubmitForReviewMutationOptions(options), queryClient);
+    }

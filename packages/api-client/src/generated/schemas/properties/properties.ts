@@ -15,8 +15,51 @@ export const PropertiesListResponse = zod.object({
   "properties": zod.array(zod.object({
   "id": zod.uuid().regex(propertiesListResponsePropertiesItemIdRegExp),
   "name": zod.string(),
+  "status": zod.enum(['DRAFT', 'PENDING_REVIEW', 'PUBLISHED', 'REJECTED', 'SUSPENDED']),
   "membershipRole": zod.union([zod.literal('OWNER'),zod.literal('MANAGER'),zod.literal('STAFF'),zod.literal(null)]).nullable()
 }))
+})
+
+export const propertiesCreateBodyNameMax = 120;
+
+
+
+export const PropertiesCreateBody = zod.object({
+  "name": zod.string().min(1).max(propertiesCreateBodyNameMax)
+})
+
+export const propertiesCreateResponseIdRegExp = new RegExp('^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$');
+export const propertiesCreateResponseLatitudeMin = -90;
+export const propertiesCreateResponseLatitudeMax = 90;
+
+export const propertiesCreateResponseLongitudeMin = -180;
+export const propertiesCreateResponseLongitudeMax = 180;
+
+
+
+export const PropertiesCreateResponse = zod.object({
+  "id": zod.uuid().regex(propertiesCreateResponseIdRegExp),
+  "name": zod.string(),
+  "status": zod.enum(['DRAFT', 'PENDING_REVIEW', 'PUBLISHED', 'REJECTED', 'SUSPENDED']),
+  "membershipRole": zod.union([zod.literal('OWNER'),zod.literal('MANAGER'),zod.literal('STAFF'),zod.literal(null)]).nullable(),
+  "description": zod.string().nullable(),
+  "rejectionReason": zod.string().nullable(),
+  "latitude": zod.number().min(propertiesCreateResponseLatitudeMin).max(propertiesCreateResponseLatitudeMax).nullable(),
+  "longitude": zod.number().min(propertiesCreateResponseLongitudeMin).max(propertiesCreateResponseLongitudeMax).nullable(),
+  "landmark": zod.string().nullable(),
+  "directions": zod.string().nullable(),
+  "city": zod.string().nullable(),
+  "district": zod.string().nullable(),
+  "state": zod.string().nullable(),
+  "checkInTime": zod.string().nullable(),
+  "checkOutTime": zod.string().nullable(),
+  "houseRules": zod.string().nullable(),
+  "amenities": zod.array(zod.enum(['PARKING', 'HOT_WATER', 'WIFI', 'GENERATOR', 'BONFIRE', 'PETS_ALLOWED'])),
+  "mealPlan": zod.union([zod.literal('ROOM_ONLY'),zod.literal('BREAKFAST'),zod.literal('BREAKFAST_DINNER'),zod.literal('ALL_MEALS'),zod.literal(null)]).nullable(),
+  "gstEnabled": zod.boolean(),
+  "gstin": zod.string().nullable(),
+  "homestayRegistrationNumber": zod.string().nullable(),
+  "missingFields": zod.array(zod.enum(['description', 'photos', 'rooms', 'location', 'city', 'district', 'state', 'checkInTime', 'checkOutTime', 'mealPlan', 'gstin']))
 })
 
 export const PropertiesFindOneParams = zod.object({
@@ -24,11 +67,161 @@ export const PropertiesFindOneParams = zod.object({
 })
 
 export const propertiesFindOneResponseIdRegExp = new RegExp('^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$');
+export const propertiesFindOneResponseLatitudeMin = -90;
+export const propertiesFindOneResponseLatitudeMax = 90;
+
+export const propertiesFindOneResponseLongitudeMin = -180;
+export const propertiesFindOneResponseLongitudeMax = 180;
+
 
 
 export const PropertiesFindOneResponse = zod.object({
   "id": zod.uuid().regex(propertiesFindOneResponseIdRegExp),
   "name": zod.string(),
-  "membershipRole": zod.union([zod.literal('OWNER'),zod.literal('MANAGER'),zod.literal('STAFF'),zod.literal(null)]).nullable()
+  "status": zod.enum(['DRAFT', 'PENDING_REVIEW', 'PUBLISHED', 'REJECTED', 'SUSPENDED']),
+  "membershipRole": zod.union([zod.literal('OWNER'),zod.literal('MANAGER'),zod.literal('STAFF'),zod.literal(null)]).nullable(),
+  "description": zod.string().nullable(),
+  "rejectionReason": zod.string().nullable(),
+  "latitude": zod.number().min(propertiesFindOneResponseLatitudeMin).max(propertiesFindOneResponseLatitudeMax).nullable(),
+  "longitude": zod.number().min(propertiesFindOneResponseLongitudeMin).max(propertiesFindOneResponseLongitudeMax).nullable(),
+  "landmark": zod.string().nullable(),
+  "directions": zod.string().nullable(),
+  "city": zod.string().nullable(),
+  "district": zod.string().nullable(),
+  "state": zod.string().nullable(),
+  "checkInTime": zod.string().nullable(),
+  "checkOutTime": zod.string().nullable(),
+  "houseRules": zod.string().nullable(),
+  "amenities": zod.array(zod.enum(['PARKING', 'HOT_WATER', 'WIFI', 'GENERATOR', 'BONFIRE', 'PETS_ALLOWED'])),
+  "mealPlan": zod.union([zod.literal('ROOM_ONLY'),zod.literal('BREAKFAST'),zod.literal('BREAKFAST_DINNER'),zod.literal('ALL_MEALS'),zod.literal(null)]).nullable(),
+  "gstEnabled": zod.boolean(),
+  "gstin": zod.string().nullable(),
+  "homestayRegistrationNumber": zod.string().nullable(),
+  "missingFields": zod.array(zod.enum(['description', 'photos', 'rooms', 'location', 'city', 'district', 'state', 'checkInTime', 'checkOutTime', 'mealPlan', 'gstin']))
+})
+
+export const PropertiesUpdateParams = zod.object({
+  "propertyId": zod.string()
+})
+
+export const propertiesUpdateBodyNameMax = 120;
+
+export const propertiesUpdateBodyDescriptionMax = 2000;
+
+export const propertiesUpdateBodyLatitudeMin = -90;
+export const propertiesUpdateBodyLatitudeMax = 90;
+
+export const propertiesUpdateBodyLongitudeMin = -180;
+export const propertiesUpdateBodyLongitudeMax = 180;
+
+export const propertiesUpdateBodyLandmarkMax = 200;
+
+export const propertiesUpdateBodyDirectionsMax = 2000;
+
+export const propertiesUpdateBodyCityMax = 120;
+
+export const propertiesUpdateBodyDistrictMax = 120;
+
+export const propertiesUpdateBodyStateMax = 120;
+
+export const propertiesUpdateBodyCheckInTimeRegExp = new RegExp('^([01]\\d|2[0-3]):[0-5]\\d$');
+export const propertiesUpdateBodyCheckOutTimeRegExp = new RegExp('^([01]\\d|2[0-3]):[0-5]\\d$');
+export const propertiesUpdateBodyHouseRulesMax = 4000;
+
+export const propertiesUpdateBodyGstinRegExp = new RegExp('^\\d{2}[A-Z]{5}\\d{4}[A-Z][1-9A-Z]Z[0-9A-Z]$');
+export const propertiesUpdateBodyHomestayRegistrationNumberMax = 60;
+
+
+
+export const PropertiesUpdateBody = zod.object({
+  "name": zod.string().min(1).max(propertiesUpdateBodyNameMax).optional(),
+  "description": zod.string().max(propertiesUpdateBodyDescriptionMax).nullish(),
+  "latitude": zod.number().min(propertiesUpdateBodyLatitudeMin).max(propertiesUpdateBodyLatitudeMax).nullish(),
+  "longitude": zod.number().min(propertiesUpdateBodyLongitudeMin).max(propertiesUpdateBodyLongitudeMax).nullish(),
+  "landmark": zod.string().max(propertiesUpdateBodyLandmarkMax).nullish(),
+  "directions": zod.string().max(propertiesUpdateBodyDirectionsMax).nullish(),
+  "city": zod.string().max(propertiesUpdateBodyCityMax).nullish(),
+  "district": zod.string().max(propertiesUpdateBodyDistrictMax).nullish(),
+  "state": zod.string().max(propertiesUpdateBodyStateMax).nullish(),
+  "checkInTime": zod.string().regex(propertiesUpdateBodyCheckInTimeRegExp).nullish(),
+  "checkOutTime": zod.string().regex(propertiesUpdateBodyCheckOutTimeRegExp).nullish(),
+  "houseRules": zod.string().max(propertiesUpdateBodyHouseRulesMax).nullish(),
+  "amenities": zod.array(zod.enum(['PARKING', 'HOT_WATER', 'WIFI', 'GENERATOR', 'BONFIRE', 'PETS_ALLOWED'])).optional(),
+  "mealPlan": zod.union([zod.literal('ROOM_ONLY'),zod.literal('BREAKFAST'),zod.literal('BREAKFAST_DINNER'),zod.literal('ALL_MEALS'),zod.literal(null)]).nullish(),
+  "gstEnabled": zod.boolean().optional(),
+  "gstin": zod.string().regex(propertiesUpdateBodyGstinRegExp).nullish(),
+  "homestayRegistrationNumber": zod.string().max(propertiesUpdateBodyHomestayRegistrationNumberMax).nullish()
+})
+
+export const propertiesUpdateResponseIdRegExp = new RegExp('^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$');
+export const propertiesUpdateResponseLatitudeMin = -90;
+export const propertiesUpdateResponseLatitudeMax = 90;
+
+export const propertiesUpdateResponseLongitudeMin = -180;
+export const propertiesUpdateResponseLongitudeMax = 180;
+
+
+
+export const PropertiesUpdateResponse = zod.object({
+  "id": zod.uuid().regex(propertiesUpdateResponseIdRegExp),
+  "name": zod.string(),
+  "status": zod.enum(['DRAFT', 'PENDING_REVIEW', 'PUBLISHED', 'REJECTED', 'SUSPENDED']),
+  "membershipRole": zod.union([zod.literal('OWNER'),zod.literal('MANAGER'),zod.literal('STAFF'),zod.literal(null)]).nullable(),
+  "description": zod.string().nullable(),
+  "rejectionReason": zod.string().nullable(),
+  "latitude": zod.number().min(propertiesUpdateResponseLatitudeMin).max(propertiesUpdateResponseLatitudeMax).nullable(),
+  "longitude": zod.number().min(propertiesUpdateResponseLongitudeMin).max(propertiesUpdateResponseLongitudeMax).nullable(),
+  "landmark": zod.string().nullable(),
+  "directions": zod.string().nullable(),
+  "city": zod.string().nullable(),
+  "district": zod.string().nullable(),
+  "state": zod.string().nullable(),
+  "checkInTime": zod.string().nullable(),
+  "checkOutTime": zod.string().nullable(),
+  "houseRules": zod.string().nullable(),
+  "amenities": zod.array(zod.enum(['PARKING', 'HOT_WATER', 'WIFI', 'GENERATOR', 'BONFIRE', 'PETS_ALLOWED'])),
+  "mealPlan": zod.union([zod.literal('ROOM_ONLY'),zod.literal('BREAKFAST'),zod.literal('BREAKFAST_DINNER'),zod.literal('ALL_MEALS'),zod.literal(null)]).nullable(),
+  "gstEnabled": zod.boolean(),
+  "gstin": zod.string().nullable(),
+  "homestayRegistrationNumber": zod.string().nullable(),
+  "missingFields": zod.array(zod.enum(['description', 'photos', 'rooms', 'location', 'city', 'district', 'state', 'checkInTime', 'checkOutTime', 'mealPlan', 'gstin']))
+})
+
+export const PropertiesSubmitForReviewParams = zod.object({
+  "propertyId": zod.string()
+})
+
+export const propertiesSubmitForReviewResponseIdRegExp = new RegExp('^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$');
+export const propertiesSubmitForReviewResponseLatitudeMin = -90;
+export const propertiesSubmitForReviewResponseLatitudeMax = 90;
+
+export const propertiesSubmitForReviewResponseLongitudeMin = -180;
+export const propertiesSubmitForReviewResponseLongitudeMax = 180;
+
+
+
+export const PropertiesSubmitForReviewResponse = zod.object({
+  "id": zod.uuid().regex(propertiesSubmitForReviewResponseIdRegExp),
+  "name": zod.string(),
+  "status": zod.enum(['DRAFT', 'PENDING_REVIEW', 'PUBLISHED', 'REJECTED', 'SUSPENDED']),
+  "membershipRole": zod.union([zod.literal('OWNER'),zod.literal('MANAGER'),zod.literal('STAFF'),zod.literal(null)]).nullable(),
+  "description": zod.string().nullable(),
+  "rejectionReason": zod.string().nullable(),
+  "latitude": zod.number().min(propertiesSubmitForReviewResponseLatitudeMin).max(propertiesSubmitForReviewResponseLatitudeMax).nullable(),
+  "longitude": zod.number().min(propertiesSubmitForReviewResponseLongitudeMin).max(propertiesSubmitForReviewResponseLongitudeMax).nullable(),
+  "landmark": zod.string().nullable(),
+  "directions": zod.string().nullable(),
+  "city": zod.string().nullable(),
+  "district": zod.string().nullable(),
+  "state": zod.string().nullable(),
+  "checkInTime": zod.string().nullable(),
+  "checkOutTime": zod.string().nullable(),
+  "houseRules": zod.string().nullable(),
+  "amenities": zod.array(zod.enum(['PARKING', 'HOT_WATER', 'WIFI', 'GENERATOR', 'BONFIRE', 'PETS_ALLOWED'])),
+  "mealPlan": zod.union([zod.literal('ROOM_ONLY'),zod.literal('BREAKFAST'),zod.literal('BREAKFAST_DINNER'),zod.literal('ALL_MEALS'),zod.literal(null)]).nullable(),
+  "gstEnabled": zod.boolean(),
+  "gstin": zod.string().nullable(),
+  "homestayRegistrationNumber": zod.string().nullable(),
+  "missingFields": zod.array(zod.enum(['description', 'photos', 'rooms', 'location', 'city', 'district', 'state', 'checkInTime', 'checkOutTime', 'mealPlan', 'gstin']))
 })
 

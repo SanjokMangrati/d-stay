@@ -18,6 +18,32 @@ export function propertyBookingsPath(propertyId: string): string {
   return `${propertyHomePath(propertyId)}/bookings`;
 }
 
+export function bookingPath(propertyId: string, bookingId: string): string {
+  return `${propertyBookingsPath(propertyId)}/${bookingId}`;
+}
+
+/**
+ * The booking form, opened from the nights the host has already picked on the
+ * calendar. The dates travel in the URL so the screen can be linked to, shared
+ * between devices and survive a back gesture — which a draft in memory cannot.
+ */
+export function newBookingPath(
+  propertyId: string,
+  stay?: { checkIn: string; checkOut: string; roomId?: string },
+): string {
+  const path = `${propertyBookingsPath(propertyId)}/new`;
+  if (!stay) {
+    return path;
+  }
+
+  const query = new URLSearchParams({
+    checkIn: stay.checkIn,
+    checkOut: stay.checkOut,
+    ...(stay.roomId ? { roomId: stay.roomId } : {}),
+  });
+  return `${path}?${query.toString()}`;
+}
+
 export function propertySetupPath(propertyId: string): string {
   return `${propertyHomePath(propertyId)}/setup`;
 }

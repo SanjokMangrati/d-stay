@@ -7,13 +7,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import type { z } from "zod";
-import {
-  emptyToNull,
-  optionalPatternField,
-  SetupStepFooter,
-  type SetupStepProps,
-} from "../setup-step";
-import { FORM_VALIDATION_MODE } from "@/lib/form-mode";
+import { SetupStepFooter, type SetupStepProps } from "../setup-step";
+import { FORM_VALIDATION_MODE, emptyToNull, optionalTextField } from "@/lib/form-mode";
 import { MAX_RATE_RUPEES, rupeeAmount } from "@/lib/pricing/rupees";
 import { TextField } from "@/components/text-field";
 import {
@@ -92,14 +87,14 @@ export function StayStep({
             type="time"
             label={t("fields.checkInTime")}
             error={errors.checkInTime && t("validation.timeInvalid")}
-            {...form.register("checkInTime", optionalPatternField)}
+            {...form.register("checkInTime", optionalTextField)}
           />
           <TextField
             id="checkOutTime"
             type="time"
             label={t("fields.checkOutTime")}
             error={errors.checkOutTime && t("validation.timeInvalid")}
-            {...form.register("checkOutTime", optionalPatternField)}
+            {...form.register("checkOutTime", optionalTextField)}
           />
         </div>
 

@@ -78,6 +78,40 @@ enum StayKind {
   BLOCK
 }
 
+/// The lifecycle of a booking. `PENDING` is a pencilled-in enquiry holding the
+/// rooms until it expires; `CANCELLED` and `NO_SHOW` are terminal. Which of
+/// these hold rooms is decided in one place — `occupiesRooms` in the domain
+/// package — and mirrored by `RoomStay.occupies`, which the exclusion
+/// constraint reads.
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CHECKED_IN
+  CHECKED_OUT
+  CANCELLED
+  NO_SHOW
+}
+
+/// Where the booking came from. A fixed list rather than free text because the
+/// point of recording it is to compare channels a year later.
+enum BookingSource {
+  PHONE
+  WHATSAPP
+  WALK_IN
+  AIRBNB
+  BOOKING_COM
+  MAKEMYTRIP
+  REFERRAL
+}
+
+/// Which rule set a room-night's rate. Snapshotted on the line item so a total
+/// can be explained months later, after the season that produced it was deleted.
+enum RateSource {
+  OVERRIDE
+  WEEKEND
+  BASE
+}
+
 /// Where an image is in the upload pipeline. A row exists from the moment the
 /// API hands out a presigned URL, so an upload the host abandoned is a row the
 /// sweep can find rather than an object nothing knows about.
@@ -109,9 +143,11 @@ model User {
   createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  sessions    Session[]
-  accounts    Account[]
-  memberships PropertyMembership[]
+  sessions           Session[]
+  accounts           Account[]
+  memberships        PropertyMembership[]
+  bookingsCreated    Booking[]            @relation("BookingCreatedBy")
+  bookingsUpdated    Booking[]            @relation("BookingUpdatedBy")
 
   @@map("users")
 }
@@ -209,12 +245,18 @@ model Property {
   gstin                      String?
   homestayRegistrationNumber String? @map("homestay_registration_number")
 
+  /// How long a pencilled-in enquiry holds its rooms before it is released. The
+  /// host sets it: a homestay taking phone enquiries a season ahead needs longer
+  /// than one filling tomorrow night.
+  holdExpiryHours Int @default(24) @map("hold_expiry_hours")
+
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   memberships PropertyMembership[]
   media       MediaAsset[]
   rooms       Room[]
+  bookings    Booking[]
 
   @@index([status])
   @@map("properties")
@@ -261,10 +303,11 @@ model Room {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  property  Property       @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  property  Property          @relation(fields: [propertyId], references: [id], onDelete: Restrict)
   media     MediaAsset[]
   overrides RateOverride[]
   stays     RoomStay[]
+  lineItems BookingLineItem[]
 
   /// Not a second identity — it is what lets a photo's foreign key carry both
   /// columns, so the database refuses a photo pointing at a room of a different
@@ -330,6 +373,11 @@ model RoomStay {
   /// Null on a booking, whose guest details are the label.
   reason String?
 
+  /// Set on exactly the rows whose `kind` is `BOOKING`; the database enforces
+  /// that pairing. A booking of four rooms is four rows, so the calendar can
+  /// draw each room's bar without knowing anything about bookings.
+  bookingId String? @map("booking_id")
+
   /// Whether this row consumes the room. Always true for a block; for a booking
   /// it follows the booking's status, so cancelling frees the dates without
   /// deleting the record. It is the predicate of the exclusion constraint, which
@@ -342,11 +390,130 @@ model RoomStay {
   /// Restrict, not cascade: deleting a room must never quietly delete the record
   /// that someone slept in it. The rooms module clears a room's blocks itself and
   /// lets this refuse the rest.
-  room Room @relation(fields: [roomId, propertyId], references: [id, propertyId], onDelete: Restrict)
+  room    Room     @relation(fields: [roomId, propertyId], references: [id, propertyId], onDelete: Restrict)
+  booking Booking? @relation(fields: [bookingId], references: [id], onDelete: Restrict)
 
   @@index([propertyId, checkIn])
   @@index([roomId, checkIn])
+  @@index([bookingId])
   @@map("room_stays")
+}
+
+/// What a guest agreed to: the dates, the rooms, the guest, and what it costs.
+/// Occupancy is not stored here — it is the `RoomStay` rows this booking holds,
+/// which is what keeps one answer to "is this room free" — and money is not
+/// stored as a running balance: payments are rows, and what is outstanding is
+/// derived from them.
+///
+/// The totals are a snapshot, frozen when the booking is written. A rate the
+/// host changes next week does not reach backwards into what a guest was quoted;
+/// changing a booking's dates or rooms rewrites the snapshot as one transaction.
+model Booking {
+  id         String @id @default(uuid(7))
+  propertyId String @map("property_id")
+
+  guestName  String  @map("guest_name")
+  /// E.164. The only way most of these guests can be reached again.
+  guestPhone String  @map("guest_phone")
+  guestEmail String? @map("guest_email")
+
+  adults   Int
+  children Int @default(0)
+
+  source BookingSource
+  status BookingStatus @default(PENDING)
+
+  /// The same range as this booking's stays, so a list of arrivals is one query
+  /// against one table. The stays remain the occupancy truth; these two are
+  /// written together and never separately.
+  checkIn  DateTime @map("check_in") @db.Date
+  /// Exclusive. The morning the rooms are free again.
+  checkOut DateTime @map("check_out") @db.Date
+
+  /// A buyout. Recorded rather than inferred from "every room is booked",
+  /// because a host who adds a room next month did not un-buy-out the house.
+  isWholeProperty Boolean @default(false) @map("is_whole_property")
+
+  /// Paise, all of them, snapshotted from the quote at write time.
+  roomTotal       Int @map("room_total")
+  extraGuestTotal Int @map("extra_guest_total")
+  mealTotal       Int @map("meal_total")
+  subtotal        Int
+  taxTotal        Int @map("tax_total")
+  total           Int
+
+  /// What the host actually charged, when they negotiated. The computed total
+  /// above is kept beside it: the discount is a fact worth reading later, and
+  /// overwriting it would erase what the rates said at the time.
+  overrideTotal  Int?    @map("override_total")
+  overrideReason String? @map("override_reason")
+
+  /// Which GST slab table produced `taxTotal`, so a historical total can be
+  /// explained after the government moves the boundaries.
+  gstSlabVersion String @map("gst_slab_version")
+
+  /// Not for the guest. "Arriving late, needs a pickup from the bus stand."
+  note String?
+
+  /// When a pencilled-in enquiry stops holding its rooms. Null on every status
+  /// but `PENDING` — a confirmed booking does not expire.
+  expiresAt DateTime? @map("expires_at") @db.Timestamptz(3)
+
+  cancellationReason String? @map("cancellation_reason")
+
+  /// Owner and caretaker work the same property; a booking says who touched it.
+  createdById String @map("created_by_id")
+  updatedById String @map("updated_by_id")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  property  Property          @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  createdBy User              @relation("BookingCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+  updatedBy User              @relation("BookingUpdatedBy", fields: [updatedById], references: [id], onDelete: Restrict)
+  stays     RoomStay[]
+  lineItems BookingLineItem[]
+
+  @@index([propertyId, checkIn])
+  @@index([propertyId, status])
+  @@index([propertyId, guestPhone])
+  @@map("bookings")
+}
+
+/// One room-night as it was priced, written once and never updated. This is what
+/// makes a booking explainable a year later: which rule set the rate, what the
+/// extra heads and the meals came to, and which GST slab that produced.
+///
+/// Changing a booking writes new rows; it does not edit these.
+model BookingLineItem {
+  id        String @id @default(uuid(7))
+  bookingId String @map("booking_id")
+  roomId    String @map("room_id")
+
+  date DateTime @db.Date
+
+  source RateSource
+
+  /// Paise. `tariff` is what the slab was read from: the room, the extra guests
+  /// and the meals for this one night together.
+  roomCharge       Int @map("room_charge")
+  extraGuests      Int @map("extra_guests")
+  extraGuestCharge Int @map("extra_guest_charge")
+  mealCharge       Int @map("meal_charge")
+  tariff           Int
+  gstBasisPoints   Int @map("gst_basis_points")
+  taxAmount        Int @map("tax_amount")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  /// Cascade from the booking is the one deletion that may reach these rows, and
+  /// a booking is never deleted — it is cancelled. The room is restricted, so a
+  /// room cannot be deleted out from under the history of what it earned.
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  room    Room    @relation(fields: [roomId], references: [id], onDelete: Restrict)
+
+  @@index([bookingId])
+  @@map("booking_line_items")
 }
 
 /// A photo of the property. Bytes never pass through the API: it signs an upload

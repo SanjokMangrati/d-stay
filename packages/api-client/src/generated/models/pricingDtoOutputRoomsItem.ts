@@ -19,6 +19,11 @@ export type PricingDtoOutputRoomsItem = {
   /**
      * @minimum -9007199254740991
      * @maximum 9007199254740991
+     */
+  maxOccupancy: number;
+  /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
      * @nullable
      */
   baseRate: number | null;

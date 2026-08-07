@@ -1,7 +1,7 @@
 import { daysBetween } from '@d-stay/domain/datetime';
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
-import { StayKind } from '../../generated/prisma/enums';
+import { BookingStatus, StayKind } from '../../generated/prisma/enums';
 
 /**
  * How much of the calendar one request may pull. A host scrolling a year ahead
@@ -33,6 +33,15 @@ export const roomStaySchema = z.object({
   checkOut: stayDate,
   /** What the host wrote on a block. Null on a booking. */
   reason: z.string().nullable(),
+  /** The booking this row holds the room for. Null on a block. */
+  bookingId: z.uuid().nullable(),
+  /**
+   * How far through their stay the guest is, so the calendar can tell a
+   * pencilled-in enquiry from a guest already in the house. Null on a block.
+   */
+  bookingStatus: z.enum(BookingStatus).nullable(),
+  /** Who the booked cell belongs to, so the bar can carry a name. Null on a block. */
+  guestName: z.string().nullable(),
 });
 
 /**

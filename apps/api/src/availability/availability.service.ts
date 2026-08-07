@@ -24,6 +24,8 @@ const STAY_SELECT = {
   checkIn: true,
   checkOut: true,
   reason: true,
+  bookingId: true,
+  booking: { select: { status: true, guestName: true } },
 } satisfies Prisma.RoomStaySelect;
 
 /**
@@ -32,6 +34,17 @@ const STAY_SELECT = {
  * this system that actually prevents a double booking.
  */
 const NO_OVERLAP_CONSTRAINT = 'room_stays_no_overlap';
+
+/**
+ * Whether the database refused a write because two stays would have overlapped.
+ * Every path that writes a stay — blocks here, bookings in their own module —
+ * asks this, so there is one thing to catch and one code to answer with.
+ */
+export function isStayOverlapViolation(error: unknown): boolean {
+  return (
+    error instanceof Error && error.message.includes(NO_OVERLAP_CONSTRAINT)
+  );
+}
 
 /** A half-open stay range, in the form Prisma wants for a `DATE` column. */
 interface StayRange {
@@ -138,10 +151,7 @@ export class AvailabilityService {
     } catch (error) {
       // The check above exists to name the room in the way; this is what holds
       // when two devices block the same nights at the same moment.
-      if (
-        error instanceof Error &&
-        error.message.includes(NO_OVERLAP_CONSTRAINT)
-      ) {
+      if (isStayOverlapViolation(error)) {
         throw conflictError(block);
       }
       throw error;
@@ -166,8 +176,12 @@ export class AvailabilityService {
    * Names the rooms that are in the way and the dates they are taken for.
    * "Those dates are not available" is not something a host can act on while a
    * guest is waiting on the phone.
+   *
+   * Public because bookings write stays too, and a second implementation of
+   * "which rooms are in the way" would be a second answer to it. It is a message
+   * improver, never the safety mechanism — the exclusion constraint is that.
    */
-  private async assertRoomsAreFree(
+  async assertRoomsAreFree(
     propertyId: string,
     roomIds: string[],
     range: StayRange,
@@ -234,17 +248,16 @@ function conflictError(
 }
 
 /** A `DATE` column arrives as UTC midnight; the calendar day is all it carries. */
-function toStayDto(stay: {
-  id: string;
-  roomId: string;
-  kind: StayKind;
-  checkIn: Date;
-  checkOut: Date;
-  reason: string | null;
-}): StayListDto['stays'][number] {
+function toStayDto(
+  stay: Prisma.RoomStayGetPayload<{ select: typeof STAY_SELECT }>,
+): StayListDto['stays'][number] {
+  const { booking, ...row } = stay;
+
   return {
-    ...stay,
+    ...row,
     checkIn: toStayDate(stay.checkIn),
     checkOut: toStayDate(stay.checkOut),
+    bookingStatus: booking?.status ?? null,
+    guestName: booking?.guestName ?? null,
   };
 }

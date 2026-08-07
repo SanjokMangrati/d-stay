@@ -17,6 +17,8 @@ export const roomRatesSchema = z.object({
   name: z.string(),
   isActive: z.boolean(),
   standardOccupancy: z.number().int(),
+  /** The hard cap, so a booking form can stop a host over-filling the room. */
+  maxOccupancy: z.number().int(),
   /** Null until the host prices the room; such a room cannot be quoted. */
   baseRate: z.number().int().nullable(),
   weekendRate: z.number().int().nullable(),

@@ -14,8 +14,14 @@ import { addDays, formatStayDate, daysBetween } from "@d-stay/domain/datetime";
 import { formatPaise, rupeesToPaise } from "@d-stay/domain/money";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { BanIcon, IndianRupeeIcon, Trash2Icon } from "lucide-react";
+import {
+  BanIcon,
+  IndianRupeeIcon,
+  Trash2Icon,
+  UserRoundPlusIcon,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -36,6 +42,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { staysBlocking, type StayCells } from "@/lib/calendar/stay-cells";
 import type { CalendarSelection } from "@/lib/calendar/use-range-selection";
+import { newBookingPath } from "@/lib/properties/property-paths";
 import { FORM_VALIDATION_MODE } from "@/lib/form-mode";
 import { MAX_RATE_RUPEES, rupeeAmount } from "@/lib/pricing/rupees";
 
@@ -114,6 +121,28 @@ export function SelectionSheet({
               />
             </div>
           )}
+
+          {/* First, because it is what a host is most often doing with nights
+              they have just drawn: someone is on the phone asking for them. */}
+          <Button
+            size="xl"
+            className="w-full"
+            nativeButton={false}
+            render={
+              <Link
+                href={newBookingPath(propertyId, {
+                  checkIn: selection.from,
+                  // The selection names nights; a stay ends the morning after
+                  // the last of them.
+                  checkOut: addDays(selection.to, 1),
+                  roomId: selection.roomId,
+                })}
+              />
+            }
+          >
+            <UserRoundPlusIcon aria-hidden />
+            {t("selection.book")}
+          </Button>
 
           <RateForm
             propertyId={propertyId}

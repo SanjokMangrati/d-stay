@@ -19,6 +19,9 @@ export const pricingFindResponseRoomsItemRoomIdRegExp = new RegExp('^([0-9a-fA-F
 export const pricingFindResponseRoomsItemStandardOccupancyMin = -9007199254740991;
 export const pricingFindResponseRoomsItemStandardOccupancyMax = 9007199254740991;
 
+export const pricingFindResponseRoomsItemMaxOccupancyMin = -9007199254740991;
+export const pricingFindResponseRoomsItemMaxOccupancyMax = 9007199254740991;
+
 export const pricingFindResponseRoomsItemBaseRateMin = -9007199254740991;
 export const pricingFindResponseRoomsItemBaseRateMax = 9007199254740991;
 
@@ -49,6 +52,7 @@ export const PricingFindResponse = zod.object({
   "name": zod.string(),
   "isActive": zod.boolean(),
   "standardOccupancy": zod.int().min(pricingFindResponseRoomsItemStandardOccupancyMin).max(pricingFindResponseRoomsItemStandardOccupancyMax),
+  "maxOccupancy": zod.int().min(pricingFindResponseRoomsItemMaxOccupancyMin).max(pricingFindResponseRoomsItemMaxOccupancyMax),
   "baseRate": zod.int().min(pricingFindResponseRoomsItemBaseRateMin).max(pricingFindResponseRoomsItemBaseRateMax).nullable(),
   "weekendRate": zod.int().min(pricingFindResponseRoomsItemWeekendRateMin).max(pricingFindResponseRoomsItemWeekendRateMax).nullable(),
   "extraGuestCharge": zod.int().min(pricingFindResponseRoomsItemExtraGuestChargeMin).max(pricingFindResponseRoomsItemExtraGuestChargeMax)
@@ -93,6 +97,9 @@ export const pricingCreateOverrideResponseRoomsItemRoomIdRegExp = new RegExp('^(
 export const pricingCreateOverrideResponseRoomsItemStandardOccupancyMin = -9007199254740991;
 export const pricingCreateOverrideResponseRoomsItemStandardOccupancyMax = 9007199254740991;
 
+export const pricingCreateOverrideResponseRoomsItemMaxOccupancyMin = -9007199254740991;
+export const pricingCreateOverrideResponseRoomsItemMaxOccupancyMax = 9007199254740991;
+
 export const pricingCreateOverrideResponseRoomsItemBaseRateMin = -9007199254740991;
 export const pricingCreateOverrideResponseRoomsItemBaseRateMax = 9007199254740991;
 
@@ -123,6 +130,7 @@ export const PricingCreateOverrideResponse = zod.object({
   "name": zod.string(),
   "isActive": zod.boolean(),
   "standardOccupancy": zod.int().min(pricingCreateOverrideResponseRoomsItemStandardOccupancyMin).max(pricingCreateOverrideResponseRoomsItemStandardOccupancyMax),
+  "maxOccupancy": zod.int().min(pricingCreateOverrideResponseRoomsItemMaxOccupancyMin).max(pricingCreateOverrideResponseRoomsItemMaxOccupancyMax),
   "baseRate": zod.int().min(pricingCreateOverrideResponseRoomsItemBaseRateMin).max(pricingCreateOverrideResponseRoomsItemBaseRateMax).nullable(),
   "weekendRate": zod.int().min(pricingCreateOverrideResponseRoomsItemWeekendRateMin).max(pricingCreateOverrideResponseRoomsItemWeekendRateMax).nullable(),
   "extraGuestCharge": zod.int().min(pricingCreateOverrideResponseRoomsItemExtraGuestChargeMin).max(pricingCreateOverrideResponseRoomsItemExtraGuestChargeMax)
@@ -148,6 +156,9 @@ export const pricingRemoveOverrideResponseMealChargePerPersonMax = 9007199254740
 export const pricingRemoveOverrideResponseRoomsItemRoomIdRegExp = new RegExp('^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$');
 export const pricingRemoveOverrideResponseRoomsItemStandardOccupancyMin = -9007199254740991;
 export const pricingRemoveOverrideResponseRoomsItemStandardOccupancyMax = 9007199254740991;
+
+export const pricingRemoveOverrideResponseRoomsItemMaxOccupancyMin = -9007199254740991;
+export const pricingRemoveOverrideResponseRoomsItemMaxOccupancyMax = 9007199254740991;
 
 export const pricingRemoveOverrideResponseRoomsItemBaseRateMin = -9007199254740991;
 export const pricingRemoveOverrideResponseRoomsItemBaseRateMax = 9007199254740991;
@@ -179,6 +190,7 @@ export const PricingRemoveOverrideResponse = zod.object({
   "name": zod.string(),
   "isActive": zod.boolean(),
   "standardOccupancy": zod.int().min(pricingRemoveOverrideResponseRoomsItemStandardOccupancyMin).max(pricingRemoveOverrideResponseRoomsItemStandardOccupancyMax),
+  "maxOccupancy": zod.int().min(pricingRemoveOverrideResponseRoomsItemMaxOccupancyMin).max(pricingRemoveOverrideResponseRoomsItemMaxOccupancyMax),
   "baseRate": zod.int().min(pricingRemoveOverrideResponseRoomsItemBaseRateMin).max(pricingRemoveOverrideResponseRoomsItemBaseRateMax).nullable(),
   "weekendRate": zod.int().min(pricingRemoveOverrideResponseRoomsItemWeekendRateMin).max(pricingRemoveOverrideResponseRoomsItemWeekendRateMax).nullable(),
   "extraGuestCharge": zod.int().min(pricingRemoveOverrideResponseRoomsItemExtraGuestChargeMin).max(pricingRemoveOverrideResponseRoomsItemExtraGuestChargeMax)

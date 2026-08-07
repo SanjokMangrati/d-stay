@@ -23,6 +23,8 @@ export const ERROR_CODES = [
   'ROOM_HAS_BOOKINGS',
   'RATE_OVERRIDE_CONFLICT',
   'BOOKING_CONFLICT',
+  'ROOM_NOT_PRICED',
+  'MIN_STAY_VIOLATION',
 ] as const;
 
 export type ErrorCode = (typeof ERROR_CODES)[number];
@@ -47,6 +49,8 @@ export const ERROR_CODE_STATUS: Record<ErrorCode, number> = {
   ROOM_HAS_BOOKINGS: HttpStatus.CONFLICT,
   RATE_OVERRIDE_CONFLICT: HttpStatus.CONFLICT,
   BOOKING_CONFLICT: HttpStatus.CONFLICT,
+  ROOM_NOT_PRICED: HttpStatus.UNPROCESSABLE_ENTITY,
+  MIN_STAY_VIOLATION: HttpStatus.UNPROCESSABLE_ENTITY,
 };
 
 const STATUS_CODE: Partial<Record<number, ErrorCode>> = {

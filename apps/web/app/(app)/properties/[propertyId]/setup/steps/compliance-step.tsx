@@ -8,13 +8,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { Controller, useForm } from "react-hook-form";
 import type { z } from "zod";
-import {
-  emptyToNull,
-  optionalUpperCaseField,
-  SetupStepFooter,
-  type SetupStepProps,
-} from "../setup-step";
-import { FORM_VALIDATION_MODE } from "@/lib/form-mode";
+import { SetupStepFooter, type SetupStepProps } from "../setup-step";
+import { FORM_VALIDATION_MODE, emptyToNull, optionalUpperCaseField } from "@/lib/form-mode";
 import { TextField } from "@/components/text-field";
 import {
   Field,

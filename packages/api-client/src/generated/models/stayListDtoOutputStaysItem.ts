@@ -5,6 +5,7 @@
  * Host, admin and guest surfaces for d-stay homestays.
  * OpenAPI spec version: 0.1.0
  */
+import type { StayListDtoOutputStaysItemBookingStatus } from './stayListDtoOutputStaysItemBookingStatus';
 import type { StayListDtoOutputStaysItemKind } from './stayListDtoOutputStaysItemKind';
 
 export type StayListDtoOutputStaysItem = {
@@ -19,4 +20,13 @@ export type StayListDtoOutputStaysItem = {
   checkOut: string;
   /** @nullable */
   reason: string | null;
+  /**
+     * @nullable
+     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+     */
+  bookingId: string | null;
+  /** @nullable */
+  bookingStatus: StayListDtoOutputStaysItemBookingStatus;
+  /** @nullable */
+  guestName: string | null;
 };

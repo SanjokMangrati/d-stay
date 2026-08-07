@@ -2,8 +2,9 @@
 
 import type { AvailabilityFindParams } from "@d-stay/api-client/models";
 import { addDays, formatStayDate } from "@d-stay/domain/datetime";
-import { Trash2Icon } from "lucide-react";
+import { ChevronRightIcon, Trash2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import type { CalendarRoom } from "./month-grid";
 import { useRemoveBlock } from "./use-blocks";
 import { ApiErrorAlert } from "@/components/api-error-alert";
@@ -16,6 +17,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import type { Stay } from "@/lib/calendar/stay-cells";
+import { bookingPath } from "@/lib/properties/property-paths";
 
 /**
  * What is already in a cell the host tapped. A block can be lifted from here,
@@ -67,6 +69,21 @@ export function StaySheet({
           {stay.reason !== null && <p className="text-sm">{stay.reason}</p>}
 
           <ApiErrorAlert error={remove.error} />
+
+          {/* A booked cell is a way into the booking that holds it — the guest,
+              the money and the check-in all live there, not here. */}
+          {stay.bookingId !== null && (
+            <Button
+              variant="outline"
+              size="xl"
+              className="w-full justify-between"
+              nativeButton={false}
+              render={<Link href={bookingPath(propertyId, stay.bookingId)} />}
+            >
+              {stay.guestName ?? t("stay.booking")}
+              <ChevronRightIcon aria-hidden />
+            </Button>
+          )}
 
           {stay.kind === "BLOCK" && (
             <Button

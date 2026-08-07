@@ -44,6 +44,7 @@ export class PricingService {
           name: true,
           isActive: true,
           standardOccupancy: true,
+          maxOccupancy: true,
           baseRate: true,
           weekendRate: true,
           extraGuestCharge: true,

@@ -24,6 +24,8 @@ const MESSAGE_KEY: Partial<Record<ApiErrorCode, string>> = {
   ROOM_HAS_BOOKINGS: "roomHasBookings",
   RATE_OVERRIDE_CONFLICT: "rateOverrideConflict",
   BOOKING_CONFLICT: "bookingConflict",
+  ROOM_NOT_PRICED: "roomNotPriced",
+  MIN_STAY_VIOLATION: "minStayViolation",
 };
 
 export function ApiErrorAlert({ error }: { error: unknown }) {

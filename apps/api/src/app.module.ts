@@ -3,6 +3,7 @@ import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ZodSerializerInterceptor, ZodValidationPipe } from 'nestjs-zod';
 import { AuthModule } from './auth/auth.module';
 import { AvailabilityModule } from './availability/availability.module';
+import { BookingsModule } from './bookings/bookings.module';
 import { ConfigModule } from './config/config.module';
 import { ErrorsModule } from './errors/errors.module';
 import { HealthModule } from './health/health.module';
@@ -32,6 +33,7 @@ import { UsersModule } from './users/users.module';
     RoomsModule,
     PricingModule,
     AvailabilityModule,
+    BookingsModule,
   ],
   providers: [
     // Requests are validated once, at the edge, against the same zod schema that

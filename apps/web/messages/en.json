@@ -83,7 +83,9 @@
 		"roomLimitReached": "You have as many rooms as we can hold. Delete one to add another.",
 		"bookingConflict": "Some of these nights are already taken. Refresh the calendar to see what is in the way.",
 		"rateOverrideConflict": "These nights already have a season on them. Remove it before setting another rate.",
-		"roomHasBookings": "This room has bookings against it. Deactivate it instead so its history survives."
+		"roomHasBookings": "This room has bookings against it. Deactivate it instead so its history survives.",
+		"roomNotPriced": "One of these rooms has no rate for those nights. Set one, then take the booking.",
+		"minStayViolation": "These nights carry a minimum stay. Pick a longer stay or lift the season."
 	},
 	"property": {
 		"new": {
@@ -341,7 +343,9 @@
 			"free": "{room}, {date} — free, {rate} a night",
 			"booked": "{room}, {date} — booked",
 			"blocked": "{room}, {date} — blocked",
-			"unpriced": "{room}, {date} — free, no rate set"
+			"unpriced": "{room}, {date} — free, no rate set",
+			"pending": "{room}, {date} — pencilled in",
+			"checkedIn": "{room}, {date} — guest in the house"
 		},
 		"selection": {
 			"range": "{from} to {to}",
@@ -368,7 +372,8 @@
 			"seasons": {
 				"title": "Seasons on these nights",
 				"remove": "Remove this season"
-			}
+			},
+			"book": "Book these nights"
 		},
 		"stay": {
 			"blocked": "Blocked in {room}",
@@ -397,8 +402,122 @@
 			"minStay": "This season needs a stay of at least {nights, plural, one {# night} other {# nights}}."
 		}
 	},
-	"bookings": {
-		"title": "Bookings",
-		"empty": "Every booking you take will be listed here."
+	"booking": {
+		"status": {
+			"PENDING": "Pencilled in",
+			"CONFIRMED": "Confirmed",
+			"CHECKED_IN": "In the house",
+			"CHECKED_OUT": "Checked out",
+			"CANCELLED": "Cancelled",
+			"NO_SHOW": "No-show"
+		},
+		"source": {
+			"PHONE": "Phone",
+			"WHATSAPP": "WhatsApp",
+			"WALK_IN": "Walk-in",
+			"AIRBNB": "Airbnb",
+			"BOOKING_COM": "Booking.com",
+			"MAKEMYTRIP": "MakeMyTrip",
+			"REFERRAL": "Referral"
+		},
+		"new": {
+			"title": "Take a booking",
+			"subtitle": "The price is worked out from your rates as you pick rooms."
+		},
+		"form": {
+			"stay": "Nights",
+			"checkIn": "Check in",
+			"checkOut": "Check out",
+			"nights": "{count, plural, one {# night} other {# nights}}",
+			"rooms": "Rooms",
+			"roomsHint": "Turn on the rooms this booking takes, and say who is in each.",
+			"roomRate": "{amount} a night, sleeps {sleeps}",
+			"roomUnpriced": "No rate set — price this room before booking it.",
+			"roomTaken": "Already taken for these nights.",
+			"pickRoom": "Book {room}",
+			"adults": "Adults",
+			"children": "Children",
+			"guest": "Guest",
+			"guestName": "Name",
+			"guestPhone": "Phone",
+			"guestPhoneHint": "How you will reach them. Ten digits, with +91.",
+			"guestEmail": "Email",
+			"guestEmailHint": "Only if they gave you one.",
+			"source": "Came from",
+			"sourceHint": "So you learn which channels actually bring guests.",
+			"terms": "Terms",
+			"hold": "Pencil it in",
+			"holdHint": "Holds the rooms until it expires, instead of confirming now.",
+			"overrideTotal": "Charge a different total (₹)",
+			"overrideTotalHint": "For a negotiated rate. What your rates said is kept beside it.",
+			"overrideReason": "Why",
+			"note": "Private note",
+			"noteHint": "Only you see this. Arrival time, a pickup, anything to remember.",
+			"save": "Save this booking",
+			"saving": "Saving…"
+		},
+		"validation": {
+			"dates": "Check out has to fall after check in.",
+			"rooms": "Pick at least one room, with at least one guest in it.",
+			"guestName": "Enter the guest's name.",
+			"guestPhone": "Enter a ten-digit Indian mobile number, with +91.",
+			"guestEmail": "Enter a valid email, or leave it blank.",
+			"amount": "Enter an amount in rupees.",
+			"overrideReason": "Say why the price was changed."
+		},
+		"quote": {
+			"title": "What this comes to",
+			"rooms": "Rooms",
+			"extraGuests": "Extra guests",
+			"meals": "Meals",
+			"tax": "GST",
+			"total": "{count, plural, one {# night} other {# nights}} in total",
+			"unpriced": "{room} has no rate for these nights.",
+			"minStay": "These nights need a stay of at least {nights, plural, one {# night} other {# nights}}."
+		},
+		"list": {
+			"title": "Bookings",
+			"subtitle": "Every stay you have taken, newest first.",
+			"search": "Search bookings",
+			"searchPlaceholder": "Guest name or phone",
+			"all": "All",
+			"nights": "{from} to {to}",
+			"empty": "Every booking you take will be listed here.",
+			"noMatches": "No bookings match that.",
+			"add": "Take a booking"
+		},
+		"detail": {
+			"expires": "This hold is released on {when}.",
+			"guest": "Guest",
+			"party": "{adults, plural, one {# adult} other {# adults}}, {children, plural, =0 {no children} one {# child} other {# children}}",
+			"source": "Came from {source}",
+			"rooms": "Rooms",
+			"money": "What it costs",
+			"total": "Your rates",
+			"charged": "Charged",
+			"actions": "What next",
+			"note": "Private note",
+			"noteHint": "Only you see this.",
+			"saveNote": "Save this note",
+			"createdBy": "Taken by {name}",
+			"updatedBy": "Last changed by {name}",
+			"cancelledFor": "Reason: {reason}",
+			"cancelAction": "Go back",
+			"move": {
+				"CONFIRMED": "Confirm this booking",
+				"CHECKED_IN": "Check the guest in",
+				"CHECKED_OUT": "Check the guest out",
+				"CANCELLED": "Cancel this booking",
+				"NO_SHOW": "Mark as a no-show"
+			},
+			"confirm": {
+				"CANCELLED": "Cancel it",
+				"NO_SHOW": "Mark no-show"
+			},
+			"reasonFor": {
+				"CANCELLED": "Why is it cancelled?",
+				"NO_SHOW": "What happened?"
+			}
+		}
 	}
 }

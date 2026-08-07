@@ -8,7 +8,9 @@ import { UserRole } from '../generated/prisma/enums';
 
 /** Every table the suite writes to, child-first so truncation order is legal. */
 const TABLES = [
+  'booking_line_items',
   'room_stays',
+  'bookings',
   'rate_overrides',
   'rooms',
   'media_assets',

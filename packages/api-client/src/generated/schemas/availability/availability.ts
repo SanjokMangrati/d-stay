@@ -25,6 +25,7 @@ export const availabilityFindResponseStaysItemIdRegExp = new RegExp('^([0-9a-fA-
 export const availabilityFindResponseStaysItemRoomIdRegExp = new RegExp('^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$');
 export const availabilityFindResponseStaysItemCheckInRegExp = new RegExp('^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$');
 export const availabilityFindResponseStaysItemCheckOutRegExp = new RegExp('^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$');
+export const availabilityFindResponseStaysItemBookingIdRegExp = new RegExp('^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$');
 
 
 export const AvailabilityFindResponse = zod.object({
@@ -34,7 +35,10 @@ export const AvailabilityFindResponse = zod.object({
   "kind": zod.enum(['BOOKING', 'BLOCK']),
   "checkIn": zod.iso.date().regex(availabilityFindResponseStaysItemCheckInRegExp),
   "checkOut": zod.iso.date().regex(availabilityFindResponseStaysItemCheckOutRegExp),
-  "reason": zod.string().nullable()
+  "reason": zod.string().nullable(),
+  "bookingId": zod.uuid().regex(availabilityFindResponseStaysItemBookingIdRegExp).nullable(),
+  "bookingStatus": zod.union([zod.literal('PENDING'),zod.literal('CONFIRMED'),zod.literal('CHECKED_IN'),zod.literal('CHECKED_OUT'),zod.literal('CANCELLED'),zod.literal('NO_SHOW'),zod.literal(null)]).nullable(),
+  "guestName": zod.string().nullable()
 }))
 })
 
@@ -85,6 +89,7 @@ export const availabilityCreateBlocksResponseStaysItemIdRegExp = new RegExp('^([
 export const availabilityCreateBlocksResponseStaysItemRoomIdRegExp = new RegExp('^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$');
 export const availabilityCreateBlocksResponseStaysItemCheckInRegExp = new RegExp('^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$');
 export const availabilityCreateBlocksResponseStaysItemCheckOutRegExp = new RegExp('^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$');
+export const availabilityCreateBlocksResponseStaysItemBookingIdRegExp = new RegExp('^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$');
 
 
 export const AvailabilityCreateBlocksResponse = zod.object({
@@ -94,7 +99,10 @@ export const AvailabilityCreateBlocksResponse = zod.object({
   "kind": zod.enum(['BOOKING', 'BLOCK']),
   "checkIn": zod.iso.date().regex(availabilityCreateBlocksResponseStaysItemCheckInRegExp),
   "checkOut": zod.iso.date().regex(availabilityCreateBlocksResponseStaysItemCheckOutRegExp),
-  "reason": zod.string().nullable()
+  "reason": zod.string().nullable(),
+  "bookingId": zod.uuid().regex(availabilityCreateBlocksResponseStaysItemBookingIdRegExp).nullable(),
+  "bookingStatus": zod.union([zod.literal('PENDING'),zod.literal('CONFIRMED'),zod.literal('CHECKED_IN'),zod.literal('CHECKED_OUT'),zod.literal('CANCELLED'),zod.literal('NO_SHOW'),zod.literal(null)]).nullable(),
+  "guestName": zod.string().nullable()
 }))
 })
 

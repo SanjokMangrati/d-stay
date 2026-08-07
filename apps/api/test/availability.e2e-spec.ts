@@ -1,7 +1,13 @@
+import { GST_SLAB_VERSION } from '@d-stay/domain/pricing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import type { App } from 'supertest/types';
-import { PropertyRole, StayKind } from '../generated/prisma/enums';
+import {
+  BookingSource,
+  BookingStatus,
+  PropertyRole,
+  StayKind,
+} from '../generated/prisma/enums';
 import { apiErrorSchema } from '../src/errors/api-error.schema';
 import { PrismaService } from '../src/prisma/prisma.service';
 import {
@@ -19,6 +25,9 @@ interface StayListBody {
     checkIn: string;
     checkOut: string;
     reason: string | null;
+    bookingId: string | null;
+    bookingStatus: string | null;
+    guestName: string | null;
   }[];
 }
 
@@ -106,17 +115,52 @@ describe('availability', () => {
       .query({ checkIn, checkOut })
       .set('cookie', owner.cookie);
 
-  /** Puts a booking's stay in the table directly — bookings have no endpoint yet. */
-  const seedBooking = (roomId: string, checkIn: string, checkOut: string) =>
-    prisma.roomStay.create({
+  /**
+   * A booked room, written directly: these tests are about what occupancy does
+   * to blocks, and going through the bookings endpoint would drag rates, guests
+   * and the status machine into a file that is not about any of them.
+   */
+  const seedBooking = async (
+    roomId: string,
+    checkIn: string,
+    checkOut: string,
+  ) => {
+    const booking = await prisma.booking.create({
       data: {
         propertyId,
-        roomId,
-        kind: StayKind.BOOKING,
+        guestName: 'Meera Rawat',
+        guestPhone: '+919876543210',
+        guestEmail: null,
+        adults: 2,
+        children: 0,
+        source: BookingSource.PHONE,
+        status: BookingStatus.CONFIRMED,
         checkIn: new Date(`${checkIn}T00:00:00.000Z`),
         checkOut: new Date(`${checkOut}T00:00:00.000Z`),
+        roomTotal: 0,
+        extraGuestTotal: 0,
+        mealTotal: 0,
+        subtotal: 0,
+        taxTotal: 0,
+        total: 0,
+        gstSlabVersion: GST_SLAB_VERSION,
+        createdById: owner.id,
+        updatedById: owner.id,
+        stays: {
+          create: {
+            propertyId,
+            roomId,
+            kind: StayKind.BOOKING,
+            checkIn: new Date(`${checkIn}T00:00:00.000Z`),
+            checkOut: new Date(`${checkOut}T00:00:00.000Z`),
+          },
+        },
       },
+      include: { stays: true },
     });
+
+    return booking.stays[0];
+  };
 
   describe('blocking dates', () => {
     it('holds a room for the nights the host chose', async () => {
@@ -133,6 +177,9 @@ describe('availability', () => {
           checkIn: '2026-11-10',
           checkOut: '2026-11-13',
           reason: 'Repairs',
+          bookingId: null,
+          bookingStatus: null,
+          guestName: null,
         },
       ]);
     });

@@ -17,6 +17,7 @@ import {
 } from "react";
 import {
   cellKey,
+  type Stay,
   type StayCells,
   type StaySegment,
 } from "@/lib/calendar/stay-cells";
@@ -32,7 +33,35 @@ export interface CalendarRoom {
   name: string;
 }
 
-type CellState = "free" | "booked" | "blocked";
+/**
+ * What a night is, from the host's point of view. A pencilled-in enquiry is not
+ * the same promise as a confirmed booking, and a guest already in the house is
+ * not the same as one expected — so the grid says which, rather than painting
+ * all three as "taken".
+ */
+type CellState = "free" | "blocked" | "pending" | "booked" | "checkedIn";
+
+type TakenState = Exclude<CellState, "free">;
+
+function cellStateOf(stay: Stay): TakenState {
+  if (stay.kind === "BLOCK") {
+    return "blocked";
+  }
+
+  return stay.bookingStatus === "PENDING"
+    ? "pending"
+    : stay.bookingStatus === "CHECKED_IN"
+      ? "checkedIn"
+      : "booked";
+}
+
+/** How a stay bar reads. Blocks are quiet; a hold is drawn as not yet settled. */
+const BAR_STYLE: Record<TakenState, string> = {
+  blocked: "bg-muted text-muted-foreground border-border border",
+  pending: "bg-secondary text-secondary-foreground border-primary/40 border border-dashed",
+  booked: "bg-primary/15 text-primary border-primary/30 border",
+  checkedIn: "bg-primary text-primary-foreground border-primary border",
+};
 
 interface MonthGridProps {
   rooms: CalendarRoom[];
@@ -213,12 +242,7 @@ function Row({
 
       {nights.map((night, index) => {
         const stay = cells.get(cellKey(room.roomId, night));
-        const state: CellState =
-          stay === undefined
-            ? "free"
-            : stay.kind === "BLOCK"
-              ? "blocked"
-              : "booked";
+        const state: CellState = stay === undefined ? "free" : cellStateOf(stay);
         const rate = state === "free" ? rateFor(room.roomId, night) : null;
 
         return (
@@ -280,9 +304,7 @@ function Row({
           className={cn(
             "pointer-events-none z-10 my-1.5 flex items-center gap-1 self-center overflow-hidden px-1.5 text-[11px] font-medium",
             "h-11",
-            stay.kind === "BLOCK"
-              ? "bg-muted text-muted-foreground border-border border"
-              : "bg-primary/15 text-primary border-primary/30 border",
+            BAR_STYLE[cellStateOf(stay)],
             // Left open where the stay runs on past the edge of the month, so a
             // clipped bar cannot read as one that ends there.
             startsHere ? "ml-1 rounded-l-lg" : "rounded-l-none",
@@ -295,7 +317,7 @@ function Row({
             <UserRoundIcon className="size-3 shrink-0" />
           )}
           <span className="truncate">
-            {stay.reason ?? t(`stay.${stay.kind === "BLOCK" ? "block" : "booking"}`)}
+            {stay.reason ?? stay.guestName ?? t("stay.booking")}
           </span>
         </div>
       ))}

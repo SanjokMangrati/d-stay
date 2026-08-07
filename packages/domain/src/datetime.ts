@@ -32,9 +32,40 @@ const isoDatePartsFormatter = new Intl.DateTimeFormat("en-CA", {
   timeZone: TIMEZONE,
 });
 
+const monthFormatter = new Intl.DateTimeFormat(LOCALE, {
+  month: "long",
+  year: "numeric",
+  timeZone: TIMEZONE,
+});
+
+const weekdayFormatter = new Intl.DateTimeFormat(LOCALE, {
+  weekday: "short",
+  timeZone: TIMEZONE,
+});
+
+const dayOfMonthFormatter = new Intl.DateTimeFormat(LOCALE, {
+  day: "numeric",
+  timeZone: TIMEZONE,
+});
+
 /** `"2026-07-14"` → `"14 Jul 2026"`. */
 export function formatStayDate(date: StayDate): string {
   return stayDateFormatter.format(parseStayDate(date));
+}
+
+/** `"2026-07-14"` → `"July 2026"`. The calendar's heading. */
+export function formatStayMonth(date: StayDate): string {
+  return monthFormatter.format(parseStayDate(date));
+}
+
+/** `"2026-07-14"` → `"Tue"`. A calendar column is too narrow for more. */
+export function formatStayWeekday(date: StayDate): string {
+  return weekdayFormatter.format(parseStayDate(date));
+}
+
+/** `"2026-07-14"` → `"14"`. */
+export function formatStayDayOfMonth(date: StayDate): string {
+  return dayOfMonthFormatter.format(parseStayDate(date));
 }
 
 /** An operational timestamp (created, checked in) rendered in the host's timezone. */
@@ -66,7 +97,7 @@ export function nightsBetween(checkIn: StayDate, checkOut: StayDate): StayDate[]
     night < last;
     night += MILLISECONDS_PER_DAY
   ) {
-    nights.push(new Date(night).toISOString().slice(0, 10));
+    nights.push(toStayDate(new Date(night)));
   }
 
   return nights;
@@ -74,9 +105,9 @@ export function nightsBetween(checkIn: StayDate, checkOut: StayDate): StayDate[]
 
 /** The stay date `count` days later. Negative counts walk backwards. */
 export function addDays(date: StayDate, count: number): StayDate {
-  return new Date(parseStayDate(date).getTime() + count * MILLISECONDS_PER_DAY)
-    .toISOString()
-    .slice(0, 10);
+  return toStayDate(
+    new Date(parseStayDate(date).getTime() + count * MILLISECONDS_PER_DAY),
+  );
 }
 
 /** Whole days between two stay dates. Negative when they are the wrong way round. */
@@ -90,6 +121,15 @@ export function daysBetween(from: StayDate, to: StayDate): number {
 // Stay dates are parsed at UTC midnight, where every day is exactly this long —
 // the product timezone has no DST, and this arithmetic never crosses one anyway.
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
+
+/**
+ * The inverse of `parseStayDate`, and what a `DATE` column arrives as: a Date at
+ * UTC midnight carrying nothing but a calendar day. Reading it in any other zone
+ * is how a stay moves a day.
+ */
+export function toStayDate(date: Date): StayDate {
+  return date.toISOString().slice(0, 10);
+}
 
 /**
  * Parses to a UTC-midnight Date so that formatting and comparison are stable.

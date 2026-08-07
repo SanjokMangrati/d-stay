@@ -1,3 +1,4 @@
+import { MAX_RATE_PAISE } from '@d-stay/domain/money';
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 import {
@@ -57,6 +58,12 @@ export const propertyDetailSchema = propertySummarySchema.extend({
   houseRules: z.string().nullable(),
   amenities: z.array(z.enum(PropertyAmenity)),
   mealPlan: z.enum(MealPlan).nullable(),
+  /**
+   * Paise per person per night, charged on every plan but room-only. It sits
+   * beside the meal plan because one kitchen cooks for the whole house — it is
+   * a fact about the property, not about any one room.
+   */
+  mealChargePerPerson: z.number().int(),
   gstEnabled: z.boolean(),
   gstin: z.string().nullable(),
   homestayRegistrationNumber: z.string().nullable(),
@@ -100,6 +107,7 @@ export const updatePropertySchema = z
     houseRules: z.string().trim().max(4000).nullable(),
     amenities: z.array(z.enum(PropertyAmenity)),
     mealPlan: z.enum(MealPlan).nullable(),
+    mealChargePerPerson: z.number().int().min(0).max(MAX_RATE_PAISE),
     gstEnabled: z.boolean(),
     gstin: z
       .string()

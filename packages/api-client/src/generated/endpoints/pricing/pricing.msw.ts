@@ -24,10 +24,6 @@ import type {
 
 export const getPricingFindResponseMock = (overrideResponse: Partial<Extract<PricingDtoOutput, object>> = {}): PricingDtoOutput => ({mealPlan: faker.helpers.arrayElement([faker.helpers.arrayElement(['ROOM_ONLY','BREAKFAST','BREAKFAST_DINNER','ALL_MEALS'] as const), null]), mealChargePerPerson: faker.number.int({min: -9007199254740991, max: 9007199254740991}), gstEnabled: faker.datatype.boolean(), rooms: Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({roomId: faker.string.uuid(), name: faker.string.alpha({length: {min: 10, max: 20}}), isActive: faker.datatype.boolean(), standardOccupancy: faker.number.int({min: -9007199254740991, max: 9007199254740991}), baseRate: faker.helpers.arrayElement([faker.number.int({min: -9007199254740991, max: 9007199254740991}), null]), weekendRate: faker.helpers.arrayElement([faker.number.int({min: -9007199254740991, max: 9007199254740991}), null]), extraGuestCharge: faker.number.int({min: -9007199254740991, max: 9007199254740991})})), overrides: Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), roomId: faker.string.uuid(), startDate: faker.date.past().toISOString().slice(0, 10), endDate: faker.date.past().toISOString().slice(0, 10), nightlyRate: faker.number.int({min: -9007199254740991, max: 9007199254740991}), minStayNights: faker.helpers.arrayElement([faker.number.int({min: -9007199254740991, max: 9007199254740991}), null])})), ...overrideResponse})
 
-export const getPricingUpdateMealChargeResponseMock = (overrideResponse: Partial<Extract<PricingDtoOutput, object>> = {}): PricingDtoOutput => ({mealPlan: faker.helpers.arrayElement([faker.helpers.arrayElement(['ROOM_ONLY','BREAKFAST','BREAKFAST_DINNER','ALL_MEALS'] as const), null]), mealChargePerPerson: faker.number.int({min: -9007199254740991, max: 9007199254740991}), gstEnabled: faker.datatype.boolean(), rooms: Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({roomId: faker.string.uuid(), name: faker.string.alpha({length: {min: 10, max: 20}}), isActive: faker.datatype.boolean(), standardOccupancy: faker.number.int({min: -9007199254740991, max: 9007199254740991}), baseRate: faker.helpers.arrayElement([faker.number.int({min: -9007199254740991, max: 9007199254740991}), null]), weekendRate: faker.helpers.arrayElement([faker.number.int({min: -9007199254740991, max: 9007199254740991}), null]), extraGuestCharge: faker.number.int({min: -9007199254740991, max: 9007199254740991})})), overrides: Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), roomId: faker.string.uuid(), startDate: faker.date.past().toISOString().slice(0, 10), endDate: faker.date.past().toISOString().slice(0, 10), nightlyRate: faker.number.int({min: -9007199254740991, max: 9007199254740991}), minStayNights: faker.helpers.arrayElement([faker.number.int({min: -9007199254740991, max: 9007199254740991}), null])})), ...overrideResponse})
-
-export const getPricingUpdateRoomRatesResponseMock = (overrideResponse: Partial<Extract<PricingDtoOutput, object>> = {}): PricingDtoOutput => ({mealPlan: faker.helpers.arrayElement([faker.helpers.arrayElement(['ROOM_ONLY','BREAKFAST','BREAKFAST_DINNER','ALL_MEALS'] as const), null]), mealChargePerPerson: faker.number.int({min: -9007199254740991, max: 9007199254740991}), gstEnabled: faker.datatype.boolean(), rooms: Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({roomId: faker.string.uuid(), name: faker.string.alpha({length: {min: 10, max: 20}}), isActive: faker.datatype.boolean(), standardOccupancy: faker.number.int({min: -9007199254740991, max: 9007199254740991}), baseRate: faker.helpers.arrayElement([faker.number.int({min: -9007199254740991, max: 9007199254740991}), null]), weekendRate: faker.helpers.arrayElement([faker.number.int({min: -9007199254740991, max: 9007199254740991}), null]), extraGuestCharge: faker.number.int({min: -9007199254740991, max: 9007199254740991})})), overrides: Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), roomId: faker.string.uuid(), startDate: faker.date.past().toISOString().slice(0, 10), endDate: faker.date.past().toISOString().slice(0, 10), nightlyRate: faker.number.int({min: -9007199254740991, max: 9007199254740991}), minStayNights: faker.helpers.arrayElement([faker.number.int({min: -9007199254740991, max: 9007199254740991}), null])})), ...overrideResponse})
-
 export const getPricingCreateOverrideResponseMock = (overrideResponse: Partial<Extract<PricingDtoOutput, object>> = {}): PricingDtoOutput => ({mealPlan: faker.helpers.arrayElement([faker.helpers.arrayElement(['ROOM_ONLY','BREAKFAST','BREAKFAST_DINNER','ALL_MEALS'] as const), null]), mealChargePerPerson: faker.number.int({min: -9007199254740991, max: 9007199254740991}), gstEnabled: faker.datatype.boolean(), rooms: Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({roomId: faker.string.uuid(), name: faker.string.alpha({length: {min: 10, max: 20}}), isActive: faker.datatype.boolean(), standardOccupancy: faker.number.int({min: -9007199254740991, max: 9007199254740991}), baseRate: faker.helpers.arrayElement([faker.number.int({min: -9007199254740991, max: 9007199254740991}), null]), weekendRate: faker.helpers.arrayElement([faker.number.int({min: -9007199254740991, max: 9007199254740991}), null]), extraGuestCharge: faker.number.int({min: -9007199254740991, max: 9007199254740991})})), overrides: Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), roomId: faker.string.uuid(), startDate: faker.date.past().toISOString().slice(0, 10), endDate: faker.date.past().toISOString().slice(0, 10), nightlyRate: faker.number.int({min: -9007199254740991, max: 9007199254740991}), minStayNights: faker.helpers.arrayElement([faker.number.int({min: -9007199254740991, max: 9007199254740991}), null])})), ...overrideResponse})
 
 export const getPricingRemoveOverrideResponseMock = (overrideResponse: Partial<Extract<PricingDtoOutput, object>> = {}): PricingDtoOutput => ({mealPlan: faker.helpers.arrayElement([faker.helpers.arrayElement(['ROOM_ONLY','BREAKFAST','BREAKFAST_DINNER','ALL_MEALS'] as const), null]), mealChargePerPerson: faker.number.int({min: -9007199254740991, max: 9007199254740991}), gstEnabled: faker.datatype.boolean(), rooms: Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({roomId: faker.string.uuid(), name: faker.string.alpha({length: {min: 10, max: 20}}), isActive: faker.datatype.boolean(), standardOccupancy: faker.number.int({min: -9007199254740991, max: 9007199254740991}), baseRate: faker.helpers.arrayElement([faker.number.int({min: -9007199254740991, max: 9007199254740991}), null]), weekendRate: faker.helpers.arrayElement([faker.number.int({min: -9007199254740991, max: 9007199254740991}), null]), extraGuestCharge: faker.number.int({min: -9007199254740991, max: 9007199254740991})})), overrides: Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), roomId: faker.string.uuid(), startDate: faker.date.past().toISOString().slice(0, 10), endDate: faker.date.past().toISOString().slice(0, 10), nightlyRate: faker.number.int({min: -9007199254740991, max: 9007199254740991}), minStayNights: faker.helpers.arrayElement([faker.number.int({min: -9007199254740991, max: 9007199254740991}), null])})), ...overrideResponse})
@@ -40,30 +36,6 @@ export const getPricingFindMockHandler = (overrideResponse?: PricingDtoOutput | 
     return HttpResponse.json(overrideResponse !== undefined
     ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
     : getPricingFindResponseMock(),
-      { status: 200
-      })
-  }, options)
-}
-
-export const getPricingUpdateMealChargeMockHandler = (overrideResponse?: PricingDtoOutput | ((info: Parameters<Parameters<typeof http.patch>[1]>[0]) => Promise<PricingDtoOutput> | PricingDtoOutput), options?: RequestHandlerOptions) => {
-  return http.patch('*/properties/:propertyId/pricing', async (info: Parameters<Parameters<typeof http.patch>[1]>[0]) => {
-
-
-    return HttpResponse.json(overrideResponse !== undefined
-    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
-    : getPricingUpdateMealChargeResponseMock(),
-      { status: 200
-      })
-  }, options)
-}
-
-export const getPricingUpdateRoomRatesMockHandler = (overrideResponse?: PricingDtoOutput | ((info: Parameters<Parameters<typeof http.patch>[1]>[0]) => Promise<PricingDtoOutput> | PricingDtoOutput), options?: RequestHandlerOptions) => {
-  return http.patch('*/properties/:propertyId/pricing/rooms/:roomId', async (info: Parameters<Parameters<typeof http.patch>[1]>[0]) => {
-
-
-    return HttpResponse.json(overrideResponse !== undefined
-    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
-    : getPricingUpdateRoomRatesResponseMock(),
       { status: 200
       })
   }, options)
@@ -94,8 +66,6 @@ export const getPricingRemoveOverrideMockHandler = (overrideResponse?: PricingDt
 }
 export const getPricingMock = () => [
   getPricingFindMockHandler(),
-  getPricingUpdateMealChargeMockHandler(),
-  getPricingUpdateRoomRatesMockHandler(),
   getPricingCreateOverrideMockHandler(),
   getPricingRemoveOverrideMockHandler()
 ]

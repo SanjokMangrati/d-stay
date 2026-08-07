@@ -1,14 +1,13 @@
-import { parseStayDate, type StayDate } from '@d-stay/domain/datetime';
+import {
+  parseStayDate,
+  toStayDate,
+  type StayDate,
+} from '@d-stay/domain/datetime';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '../../generated/prisma/client';
 import { DomainError } from '../errors/domain.error';
 import { PrismaService } from '../prisma/prisma.service';
-import type {
-  CreateRateOverrideDto,
-  PricingDto,
-  UpdateMealChargeDto,
-  UpdateRoomRatesDto,
-} from './pricing.schema';
+import type { CreateRateOverrideDto, PricingDto } from './pricing.schema';
 
 const OVERRIDE_SELECT = {
   id: true,
@@ -66,34 +65,6 @@ export class PricingService {
         endDate: toStayDate(override.endDate),
       })),
     };
-  }
-
-  async updateMealCharge(
-    propertyId: string,
-    { mealChargePerPerson }: UpdateMealChargeDto,
-  ): Promise<PricingDto> {
-    await this.prisma.property.update({
-      where: { id: propertyId },
-      data: { mealChargePerPerson },
-    });
-
-    return this.forProperty(propertyId);
-  }
-
-  async updateRoomRates(
-    propertyId: string,
-    roomId: string,
-    rates: UpdateRoomRatesDto,
-  ): Promise<PricingDto> {
-    const updated = await this.prisma.room.updateMany({
-      where: { id: roomId, propertyId },
-      data: rates,
-    });
-    if (updated.count === 0) {
-      throw new DomainError('NOT_FOUND', 'This room was not found.');
-    }
-
-    return this.forProperty(propertyId);
   }
 
   /**
@@ -190,9 +161,4 @@ function overlapError(roomNames: string[] = []): DomainError {
     'RATE_OVERRIDE_CONFLICT',
     `These nights already have a rate override${rooms}. Remove it before setting another.`,
   );
-}
-
-/** A `DATE` column arrives as UTC midnight; the calendar day is all it carries. */
-function toStayDate(date: Date): StayDate {
-  return date.toISOString().slice(0, 10);
 }

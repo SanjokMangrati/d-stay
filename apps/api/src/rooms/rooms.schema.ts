@@ -1,3 +1,4 @@
+import { MAX_RATE_PAISE } from '@d-stay/domain/money';
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 import { RoomAmenity } from '../../generated/prisma/enums';
@@ -13,6 +14,9 @@ export const MAX_ROOMS_PER_PROPERTY = 30;
 const bedCount = z.number().int().min(0).max(8);
 const occupancy = z.number().int().min(1).max(20);
 
+/** Every amount that crosses this boundary is an integer count of paise. */
+const paise = z.number().int().min(0).max(MAX_RATE_PAISE);
+
 export const roomSchema = z.object({
   id: z.uuid(),
   name: z.string(),
@@ -25,6 +29,19 @@ export const roomSchema = z.object({
   amenities: z.array(z.enum(RoomAmenity)),
   sortOrder: z.number().int(),
   isActive: z.boolean(),
+  /**
+   * What the room costs when no season says otherwise. These live on the room
+   * rather than on a pricing screen of their own because they are standing
+   * facts about it, like its occupancy — a date-shaped price is a `RateOverride`
+   * and belongs to the calendar.
+   *
+   * Null until the host prices the room; such a room cannot be quoted, which the
+   * rooms list shows rather than the database forbidding it.
+   */
+  baseRate: z.number().int().nullable(),
+  /** Null means Friday and Saturday cost the base rate. */
+  weekendRate: z.number().int().nullable(),
+  extraGuestCharge: z.number().int(),
   /**
    * Enough of the room's gallery to show it without asking for it: a host who
    * uploaded photos needs to see that from the list, not by opening the room.
@@ -55,6 +72,12 @@ const roomFields = {
   standardOccupancy: occupancy,
   maxOccupancy: occupancy,
   amenities: z.array(z.enum(RoomAmenity)),
+  // Defaulted, not required: a host adds a room while standing in it and prices
+  // it later, and a form that refused to save without a rate would make the
+  // wrong half of that decision urgent.
+  baseRate: paise.nullable().default(null),
+  weekendRate: paise.nullable().default(null),
+  extraGuestCharge: paise.default(0),
 };
 
 /**

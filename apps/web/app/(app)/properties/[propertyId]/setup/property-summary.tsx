@@ -1,10 +1,10 @@
 "use client";
 
 import { useMediaList } from "@d-stay/api-client/endpoints/media";
-import { usePricingFind } from "@d-stay/api-client/endpoints/pricing";
 import { useRoomsList } from "@d-stay/api-client/endpoints/rooms";
 import type { PropertyDetailDtoOutput } from "@d-stay/api-client/models";
-import { BedDoubleIcon, IndianRupeeIcon, PencilIcon } from "lucide-react";
+import { formatPaise } from "@d-stay/domain/money";
+import { BedDoubleIcon, PencilIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import type { ReactNode } from "react";
@@ -12,10 +12,7 @@ import type { SetupStep } from "./setup-step";
 import { ReviewStep } from "./steps/review-step";
 import { RoomCover } from "@/components/room-cover";
 import { Button } from "@/components/ui/button";
-import {
-  propertyPricingPath,
-  propertyRoomsPath,
-} from "@/lib/properties/property-paths";
+import { propertyRoomsPath } from "@/lib/properties/property-paths";
 
 /**
  * What the host has already told us, read-only. A property that is past draft is
@@ -64,13 +61,17 @@ export function PropertySummary({
           label={t("fields.mealPlan")}
           value={property.mealPlan && t(`mealPlan.${property.mealPlan}`)}
         />
+        {property.mealPlan !== null && property.mealPlan !== "ROOM_ONLY" && (
+          <Row
+            label={t("fields.mealCharge")}
+            value={formatPaise(property.mealChargePerPerson)}
+          />
+        )}
       </Section>
 
       <PhotosSection propertyId={property.id} onEdit={onEdit} />
 
       <RoomsSection propertyId={property.id} />
-
-      <RatesSection propertyId={property.id} />
 
       <Section title={t("setup.steps.house")} step="house" onEdit={onEdit}>
         <Row
@@ -167,12 +168,17 @@ function PhotosSection({
  * Rooms are not a step of this form, so this section links out rather than
  * editing in place — but a host looking at their property expects to see how
  * many rooms it has without having to remember where they live.
+ *
+ * Rates are counted here rather than given a card of their own: a room's price
+ * is part of the room, and a property whose rooms have no price is one nobody
+ * can be quoted for.
  */
 function RoomsSection({ propertyId }: { propertyId: string }) {
   const t = useTranslations("room");
   const { data } = useRoomsList(propertyId);
   const rooms = data?.rooms ?? [];
   const active = rooms.filter((room) => room.isActive).length;
+  const unpriced = rooms.filter((room) => room.baseRate === null).length;
 
   return (
     <section className="rounded-lg border p-4">
@@ -206,43 +212,12 @@ function RoomsSection({ propertyId }: { propertyId: string }) {
             ? t("empty")
             : t("roomCount", { active, total: rooms.length })}
         </p>
+        {unpriced > 0 && (
+          <p className="text-destructive text-sm">
+            {t("unpricedCount", { count: unpriced })}
+          </p>
+        )}
       </div>
-    </section>
-  );
-}
-
-/**
- * Rates are not a step either, and a property whose rooms have no price is one
- * nobody can be quoted for — so the count is the point of this card.
- */
-function RatesSection({ propertyId }: { propertyId: string }) {
-  const t = useTranslations("pricing");
-  const { data } = usePricingFind(propertyId);
-  const rooms = data?.rooms ?? [];
-  const priced = rooms.filter((room) => room.baseRate !== null).length;
-
-  return (
-    <section className="rounded-lg border p-4">
-      <div className="flex items-start justify-between gap-3">
-        <h3 className="text-sm font-semibold">{t("title")}</h3>
-        <Button
-          variant="outline"
-          size="lg"
-          className="h-11"
-          nativeButton={false}
-          render={<Link href={propertyPricingPath(propertyId)} />}
-        >
-          <IndianRupeeIcon aria-hidden />
-          {t("manage")}
-        </Button>
-      </div>
-      <p className="text-muted-foreground mt-3 text-sm">
-        {rooms.length === 0
-          ? t("rooms.empty")
-          : priced === 0
-            ? t("nonePriced")
-            : t("priced", { priced, total: rooms.length })}
-      </p>
     </section>
   );
 }

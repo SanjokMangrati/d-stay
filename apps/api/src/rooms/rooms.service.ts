@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '../../generated/prisma/client';
+import { StayKind } from '../../generated/prisma/enums';
 import { DomainError } from '../errors/domain.error';
 import { MediaService } from '../media/media.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -23,6 +24,9 @@ const ROOM_SELECT = {
   amenities: true,
   sortOrder: true,
   isActive: true,
+  baseRate: true,
+  weekendRate: true,
+  extraGuestCharge: true,
 } satisfies Prisma.RoomSelect;
 
 @Injectable()
@@ -136,12 +140,32 @@ export class RoomsService {
 
   /**
    * Deleting is for a room that should never have existed. A room that has ever
-   * been slept in is deactivated instead, and once `RoomStay` exists this refuses
-   * to delete a room holding any — until then there is nothing to hold.
+   * been slept in is deactivated instead; the check below says so in words, and
+   * `RoomStay`'s `RESTRICT` foreign key is what actually holds if some later code
+   * path forgets to ask.
+   *
+   * Blocks go with the room, because a block is a note about dates rather than a
+   * record of a stay — a host should not have to unblock a room to delete it.
    */
   async remove(propertyId: string, roomId: string): Promise<RoomListDto> {
     await this.findOwned(propertyId, roomId);
-    await this.prisma.room.delete({ where: { id: roomId } });
+
+    const booked = await this.prisma.roomStay.count({
+      where: { roomId, kind: StayKind.BOOKING },
+    });
+    if (booked > 0) {
+      throw new DomainError(
+        'ROOM_HAS_BOOKINGS',
+        'This room has bookings against it. Deactivate it instead — its history has to survive.',
+      );
+    }
+
+    await this.prisma.$transaction([
+      this.prisma.roomStay.deleteMany({
+        where: { roomId, kind: StayKind.BLOCK },
+      }),
+      this.prisma.room.delete({ where: { id: roomId } }),
+    ]);
 
     return this.listForProperty(propertyId);
   }

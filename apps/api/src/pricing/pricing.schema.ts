@@ -1,13 +1,8 @@
 import { daysBetween } from '@d-stay/domain/datetime';
+import { MAX_RATE_PAISE } from '@d-stay/domain/money';
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 import { MealPlan } from '../../generated/prisma/enums';
-
-/**
- * ₹10,00,000 a night. Not a business rule — a typo guard, so a host who means
- * ₹2,500 and types the paise finds out from the form.
- */
-const MAX_RATE_PAISE = 100_000_000;
 
 /** Every amount that crosses this boundary is an integer count of paise. */
 const paise = z.number().int().min(0).max(MAX_RATE_PAISE);
@@ -39,10 +34,12 @@ export const rateOverrideSchema = z.object({
 });
 
 /**
- * Everything the quote function needs for this property, in one response. It is
- * one screen's worth of data and the web app computes live previews from it, so
- * splitting rates and overrides into separate endpoints would only mean two
- * requests that can disagree.
+ * Everything the quote function needs for this property, in one response — the
+ * read model the calendar resolves every cell from. Rooms and seasons arrive
+ * together because a grid that fetched them separately could draw a night at a
+ * price that never existed.
+ *
+ * Read-only: each of these fields is written through the module that owns it.
  */
 export const pricingSchema = z.object({
   mealPlan: z.enum(MealPlan).nullable(),
@@ -53,20 +50,6 @@ export const pricingSchema = z.object({
 });
 
 export class PricingDto extends createZodDto(pricingSchema) {}
-
-export const updateMealChargeSchema = z.object({
-  mealChargePerPerson: paise,
-});
-
-export class UpdateMealChargeDto extends createZodDto(updateMealChargeSchema) {}
-
-export const updateRoomRatesSchema = z.object({
-  baseRate: paise.nullable(),
-  weekendRate: paise.nullable(),
-  extraGuestCharge: paise,
-});
-
-export class UpdateRoomRatesDto extends createZodDto(updateRoomRatesSchema) {}
 
 /**
  * One action, many rooms: a host raising rates for Diwali means all of them, and

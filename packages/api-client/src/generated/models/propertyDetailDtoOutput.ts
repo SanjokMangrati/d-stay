@@ -53,6 +53,11 @@ export interface PropertyDetailDtoOutput {
   amenities: PropertyDetailDtoOutputAmenitiesItem[];
   /** @nullable */
   mealPlan: PropertyDetailDtoOutputMealPlan;
+  /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+  mealChargePerPerson: number;
   gstEnabled: boolean;
   /** @nullable */
   gstin: string | null;

@@ -44,5 +44,22 @@ export interface UpdateRoomDto {
      */
   maxOccupancy: number;
   amenities: UpdateRoomDtoAmenitiesItem[];
+  /**
+     * @minimum 0
+     * @maximum 100000000
+     * @nullable
+     */
+  baseRate?: number | null;
+  /**
+     * @minimum 0
+     * @maximum 100000000
+     * @nullable
+     */
+  weekendRate?: number | null;
+  /**
+     * @minimum 0
+     * @maximum 100000000
+     */
+  extraGuestCharge?: number;
   isActive: boolean;
 }

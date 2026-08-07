@@ -5,11 +5,8 @@
  * Host, admin and guest surfaces for d-stay homestays.
  * OpenAPI spec version: 0.1.0
  */
+import type { StayListDtoOutputStaysItem } from './stayListDtoOutputStaysItem';
 
-export interface UpdateMealChargeDto {
-  /**
-     * @minimum 0
-     * @maximum 100000000
-     */
-  mealChargePerPerson: number;
+export interface StayListDtoOutput {
+  stays: StayListDtoOutputStaysItem[];
 }

@@ -30,6 +30,19 @@ interface PricingBody {
   }[];
 }
 
+/** Everything a room update must restate, so a rate change carries the rest. */
+const ROOM_FIELDS = {
+  name: 'Tulsi Room',
+  description: null,
+  doubleBeds: 1,
+  singleBeds: 0,
+  extraMattresses: 0,
+  standardOccupancy: 2,
+  maxOccupancy: 3,
+  amenities: [],
+  isActive: true,
+};
+
 const DIWALI = {
   startDate: '2026-11-06',
   endDate: '2026-11-10',
@@ -84,6 +97,18 @@ describe('pricing', () => {
     [tulsiRoomId, atticId] = property.rooms.map((room) => room.id);
   });
 
+  /** The rooms module owns a room's standing rates, and its update is a full one. */
+  const setRates = (roomId: string, rates: object) =>
+    request(app.getHttpServer())
+      .patch(`/properties/${propertyId}/rooms/${roomId}`)
+      .set('cookie', owner.cookie)
+      .send({ ...ROOM_FIELDS, ...rates });
+
+  const readPricing = () =>
+    request(app.getHttpServer())
+      .get(`/properties/${propertyId}/pricing`)
+      .set('cookie', owner.cookie);
+
   const setOverride = (override: object) =>
     request(app.getHttpServer())
       .post(`/properties/${propertyId}/pricing/overrides`)
@@ -106,16 +131,14 @@ describe('pricing', () => {
     });
   });
 
-  it('keeps rates in paise as the host set them', async () => {
-    const response = await request(app.getHttpServer())
-      .patch(`/properties/${propertyId}/pricing/rooms/${tulsiRoomId}`)
-      .set('cookie', owner.cookie)
-      .send({
-        baseRate: 250_000,
-        weekendRate: 320_000,
-        extraGuestCharge: 60_000,
-      })
-      .expect(200);
+  it('keeps rates in paise as the host set them on the room', async () => {
+    await setRates(tulsiRoomId, {
+      baseRate: 250_000,
+      weekendRate: 320_000,
+      extraGuestCharge: 60_000,
+    }).expect(200);
+
+    const response = await readPricing().expect(200);
 
     expect((response.body as PricingBody).rooms[0]).toMatchObject({
       baseRate: 250_000,
@@ -125,27 +148,24 @@ describe('pricing', () => {
   });
 
   it('clears a weekend rate back to the base rate', async () => {
-    await request(app.getHttpServer())
-      .patch(`/properties/${propertyId}/pricing/rooms/${tulsiRoomId}`)
-      .set('cookie', owner.cookie)
-      .send({ baseRate: 250_000, weekendRate: 320_000, extraGuestCharge: 0 })
-      .expect(200);
+    await setRates(tulsiRoomId, {
+      baseRate: 250_000,
+      weekendRate: 320_000,
+    }).expect(200);
+    await setRates(tulsiRoomId, {
+      baseRate: 250_000,
+      weekendRate: null,
+    }).expect(200);
 
-    const response = await request(app.getHttpServer())
-      .patch(`/properties/${propertyId}/pricing/rooms/${tulsiRoomId}`)
-      .set('cookie', owner.cookie)
-      .send({ baseRate: 250_000, weekendRate: null, extraGuestCharge: 0 })
-      .expect(200);
+    const response = await readPricing().expect(200);
 
     expect((response.body as PricingBody).rooms[0]?.weekendRate).toBeNull();
   });
 
   it('refuses a negative rate', async () => {
-    const response = await request(app.getHttpServer())
-      .patch(`/properties/${propertyId}/pricing/rooms/${tulsiRoomId}`)
-      .set('cookie', owner.cookie)
-      .send({ baseRate: -100, weekendRate: null, extraGuestCharge: 0 })
-      .expect(400);
+    const response = await setRates(tulsiRoomId, { baseRate: -100 }).expect(
+      400,
+    );
 
     const { error } = apiErrorSchema.parse(response.body);
     expect(error.code).toBe('VALIDATION_FAILED');
@@ -252,9 +272,9 @@ describe('pricing', () => {
     });
 
     const response = await request(app.getHttpServer())
-      .patch(`/properties/${other.id}/pricing/rooms/${tulsiRoomId}`)
+      .patch(`/properties/${other.id}/rooms/${tulsiRoomId}`)
       .set('cookie', owner.cookie)
-      .send({ baseRate: 100_000, weekendRate: null, extraGuestCharge: 0 })
+      .send({ ...ROOM_FIELDS, baseRate: 100_000 })
       .expect(404);
 
     const { error } = apiErrorSchema.parse(response.body);
@@ -273,11 +293,13 @@ describe('pricing', () => {
   });
 
   it('charges meals per person from the property, not the room', async () => {
-    const response = await request(app.getHttpServer())
-      .patch(`/properties/${propertyId}/pricing`)
+    await request(app.getHttpServer())
+      .patch(`/properties/${propertyId}`)
       .set('cookie', owner.cookie)
       .send({ mealChargePerPerson: 35_000 })
       .expect(200);
+
+    const response = await readPricing().expect(200);
 
     expect((response.body as PricingBody).mealChargePerPerson).toBe(35_000);
   });

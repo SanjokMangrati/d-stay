@@ -80,7 +80,10 @@
 		"propertyIncomplete": "Some details are still missing. Finish them below and submit again.",
 		"invalidStatusTransition": "That is not possible from where this property stands now.",
 		"mediaLimitReached": "You have as many photos as we can hold. Delete one to add another.",
-		"roomLimitReached": "You have as many rooms as we can hold. Delete one to add another."
+		"roomLimitReached": "You have as many rooms as we can hold. Delete one to add another.",
+		"bookingConflict": "Some of these nights are already taken. Refresh the calendar to see what is in the way.",
+		"rateOverrideConflict": "These nights already have a season on them. Remove it before setting another rate.",
+		"roomHasBookings": "This room has bookings against it. Deactivate it instead so its history survives."
 	},
 	"property": {
 		"new": {
@@ -176,7 +179,9 @@
 			"gstin": "GSTIN",
 			"gstinPlaceholder": "27AAPFU0939F1ZV",
 			"homestayRegistrationNumber": "Homestay registration number",
-			"homestayRegistrationNumberHint": "Your state homestay registration, if you have one."
+			"homestayRegistrationNumberHint": "Your state homestay registration, if you have one.",
+			"mealCharge": "Meal charge, per person per night (₹)",
+			"mealChargeHint": "Charged on top of the room for every guest, every night."
 		},
 		"location": {
 			"mapLabel": "Map of your property's location",
@@ -212,7 +217,8 @@
 			"tooLong": "That is longer than we can store.",
 			"timeInvalid": "Enter a time like 12:00.",
 			"gstinInvalid": "That is not a GSTIN. It looks like 27AAPFU0939F1ZV — two digits, five letters, four digits, then four more characters.",
-			"coordinatePair": "Set both latitude and longitude, or neither."
+			"coordinatePair": "Set both latitude and longitude, or neither.",
+			"amount": "Enter an amount in rupees."
 		}
 	},
 	"shell": {
@@ -293,7 +299,15 @@
 			"maxOccupancy": "Maximum",
 			"amenities": "What this room has",
 			"isActive": "Bookable",
-			"isActiveHint": "Turn this off while the room is out of service. Past bookings are untouched."
+			"isActiveHint": "Turn this off while the room is out of service. Past bookings are untouched.",
+			"rates": "Rates",
+			"ratesHint": "What this room costs when no season says otherwise.",
+			"baseRate": "Nightly rate (₹)",
+			"baseRateHint": "What the room costs on an ordinary night. Leave blank until you decide.",
+			"weekendRate": "Friday and Saturday rate (₹)",
+			"weekendRateHint": "Leave blank to charge the same as any other night.",
+			"extraGuestCharge": "Extra guest, per night (₹)",
+			"extraGuestChargeHint": "Charged for each guest above the standard occupancy."
 		},
 		"amenity": {
 			"ATTACHED_BATHROOM": "Attached bathroom",
@@ -304,94 +318,12 @@
 		"validation": {
 			"nameRequired": "Enter a name for this room.",
 			"tooLong": "That is longer than we can store.",
-			"occupancyOrder": "Maximum cannot be less than the number it sleeps."
-		}
-	},
-	"pricing": {
-		"title": "Rates",
-		"subtitle": "What a night costs, and the weeks that cost something else.",
-		"manage": "Rates",
-		"priced": "{priced} of {total} rooms priced",
-		"nonePriced": "No rooms priced yet",
-		"rooms": {
-			"title": "Nightly rates",
-			"hint": "The standing price of each room, before seasons and extra guests.",
-			"empty": "Add a room first — rates belong to rooms.",
-			"inactive": "Out of service",
-			"unpriced": "No rate set — this room cannot be quoted.",
-			"perNight": "{amount} a night",
-			"weekend": "{amount} on Friday and Saturday nights",
-			"noWeekendRate": "Weekends cost the same as weekdays",
-			"extraGuest": "{amount} a night for each guest above {standard}",
-			"noExtraGuestCharge": "No charge for extra guests",
-			"editRates": "Edit the rates for {room}"
+			"occupancyOrder": "Maximum cannot be less than the number it sleeps.",
+			"amount": "Enter an amount in rupees."
 		},
-		"fields": {
-			"baseRate": "Nightly rate (₹)",
-			"baseRateHint": "What the room costs on an ordinary night.",
-			"weekendRate": "Friday and Saturday rate (₹)",
-			"weekendRateHint": "Leave blank to charge the same as any other night.",
-			"extraGuestCharge": "Extra guest, per night (₹)",
-			"extraGuestChargeHint": "Charged for each guest above {standard}."
-		},
-		"meals": {
-			"title": "Meals",
-			"hint": "Charged per person per night, on top of the room.",
-			"perPerson": "Per person, per night (₹)"
-		},
-		"overrides": {
-			"title": "Seasons",
-			"hint": "Nights that cost something other than your standing rate — peak season, festivals, a long weekend.",
-			"empty": "No seasons set. Every night costs your standing rate.",
-			"add": "Add a season",
-			"newTitle": "New season",
-			"save": "Set this rate",
-			"room": "{room} at {amount} a night",
-			"minStay": "Minimum {nights, plural, one {# night} other {# nights}}",
-			"remove": "Remove the season for {room}",
-			"fields": {
-				"rooms": "Which rooms",
-				"startDate": "First night",
-				"endDate": "Last night",
-				"endDateHint": "The last night at this rate.",
-				"nightlyRate": "Nightly rate (₹)",
-				"nightlyRateHint": "Replaces both the standing and the weekend rate.",
-				"minStay": "Minimum stay (nights)",
-				"minStayHint": "Optional. Leave blank to take any length of stay."
-			}
-		},
-		"preview": {
-			"title": "Price a stay",
-			"hint": "The same sum a booking will do, so you can quote a caller straight away.",
-			"room": "Room",
-			"checkIn": "Check in",
-			"checkOut": "Check out",
-			"adults": "Adults",
-			"children": "Children",
-			"pickDates": "Pick a check-out after the check-in.",
-			"unpriced": "This room has no rate yet, so it cannot be priced.",
-			"minStay": "This season needs a stay of at least {nights, plural, one {# night} other {# nights}}.",
-			"source": {
-				"override": "· season rate",
-				"weekend": "· weekend rate"
-			},
-			"extraGuests": "Extra guests",
-			"meals": "Meals",
-			"gst": "GST",
-			"total": "Total for {nights, plural, one {# night} other {# nights}}"
-		},
-		"form": {
-			"edit": "Edit",
-			"save": "Save",
-			"saving": "Saving…",
-			"cancel": "Cancel"
-		},
-		"validation": {
-			"amount": "Enter an amount in rupees.",
-			"date": "Pick a date.",
-			"dateOrder": "The last night cannot fall before the first.",
-			"minStay": "Enter a number of nights, or leave it blank."
-		}
+		"unpriced": "No rate set — this room cannot be quoted.",
+		"perNight": "{amount} a night",
+		"unpricedCount": "{count, plural, one {# room has no rate} other {# rooms have no rate}}"
 	},
 	"today": {
 		"title": "Today",
@@ -399,7 +331,71 @@
 	},
 	"calendar": {
 		"title": "Calendar",
-		"empty": "Your month calendar arrives with rooms and rates."
+		"subtitle": "Every room, every night, and what it costs.",
+		"noRooms": "Add a room and your calendar has something to show.",
+		"addRoom": "Add a room",
+		"previousMonth": "Previous month",
+		"nextMonth": "Next month",
+		"hint": "Drag across a row to pick nights — on a phone, press and hold first.",
+		"cell": {
+			"free": "{room}, {date} — free, {rate} a night",
+			"booked": "{room}, {date} — booked",
+			"blocked": "{room}, {date} — blocked",
+			"unpriced": "{room}, {date} — free, no rate set"
+		},
+		"selection": {
+			"range": "{from} to {to}",
+			"nights": "{count, plural, one {# night} other {# nights}} in {room}",
+			"allRooms": "Apply to every room",
+			"rate": {
+				"title": "Set a rate for these nights",
+				"label": "Nightly rate (₹)",
+				"hint": "Replaces both the standing and the weekend rate for these nights.",
+				"save": "Set this rate",
+				"saving": "Setting…"
+			},
+			"block": {
+				"title": "Hold these nights back",
+				"label": "Why",
+				"hint": "So you remember in three weeks — repairs, family, an Airbnb booking.",
+				"save": "Block these nights",
+				"saving": "Blocking…",
+				"conflict": {
+					"title": "Some of these nights are already taken",
+					"stay": "{room} — {from} to {to}"
+				}
+			},
+			"seasons": {
+				"title": "Seasons on these nights",
+				"remove": "Remove this season"
+			}
+		},
+		"stay": {
+			"blocked": "Blocked in {room}",
+			"booked": "Booked in {room}",
+			"remove": "Remove this block",
+			"block": "Blocked",
+			"booking": "Booked"
+		},
+		"validation": {
+			"amount": "Enter an amount in rupees.",
+			"reason": "Say why, so you remember later."
+		},
+		"loading": "Loading this month",
+		"quote": {
+			"title": "Quote a stay",
+			"hint": "Which rooms are free for these dates, and what each would cost.",
+			"checkIn": "Check in",
+			"checkOut": "Check out",
+			"adults": "Adults",
+			"children": "Children",
+			"badRange": "Check out has to fall after check in.",
+			"checking": "Checking…",
+			"none": "Nothing is free for those nights.",
+			"unpriced": "No rate set",
+			"breakdown": "{nights, plural, one {# night} other {# nights}} — rooms {rooms}, GST {tax}",
+			"minStay": "This season needs a stay of at least {nights, plural, one {# night} other {# nights}}."
+		}
 	},
 	"bookings": {
 		"title": "Bookings",

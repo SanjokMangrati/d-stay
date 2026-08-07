@@ -1,4 +1,4 @@
-import { pricingUpdateRoomRatesBodyBaseRateMax } from "@d-stay/api-client/schemas/pricing";
+import { roomsCreateBodyBaseRateMax } from "@d-stay/api-client/schemas/rooms";
 import { PAISE_PER_RUPEE } from "@d-stay/domain/money";
 import { z } from "zod";
 
@@ -7,7 +7,7 @@ import { z } from "zod";
  * and converts at submit. The generated schemas are in paise and stay the
  * authority on the bounds — these are the same numbers divided by a hundred.
  */
-export const MAX_RATE_RUPEES = pricingUpdateRoomRatesBodyBaseRateMax / PAISE_PER_RUPEE;
+export const MAX_RATE_RUPEES = roomsCreateBodyBaseRateMax / PAISE_PER_RUPEE;
 
 export const rupeeAmount = z.number().min(0).max(MAX_RATE_RUPEES);
 

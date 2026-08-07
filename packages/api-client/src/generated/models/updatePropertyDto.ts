@@ -74,6 +74,11 @@ export interface UpdatePropertyDto {
   amenities?: UpdatePropertyDtoAmenitiesItem[];
   /** @nullable */
   mealPlan?: UpdatePropertyDtoMealPlan;
+  /**
+     * @minimum 0
+     * @maximum 100000000
+     */
+  mealChargePerPerson?: number;
   gstEnabled?: boolean;
   /**
      * @nullable

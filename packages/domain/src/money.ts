@@ -9,6 +9,13 @@ export type Paise = number;
 
 export const PAISE_PER_RUPEE = 100;
 
+/**
+ * ₹10,00,000. Not a business rule — a typo guard shared by every rate a host can
+ * type, so that someone who means ₹2,500 and enters the paise is told by the
+ * form rather than by a guest.
+ */
+export const MAX_RATE_PAISE: Paise = 100_000_000;
+
 const formatter = new Intl.NumberFormat(LOCALE, {
   style: "currency",
   currency: CURRENCY,

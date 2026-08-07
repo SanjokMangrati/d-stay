@@ -20,7 +20,9 @@ export const ERROR_CODES = [
   'INVALID_STATUS_TRANSITION',
   'MEDIA_LIMIT_REACHED',
   'ROOM_LIMIT_REACHED',
+  'ROOM_HAS_BOOKINGS',
   'RATE_OVERRIDE_CONFLICT',
+  'BOOKING_CONFLICT',
 ] as const;
 
 export type ErrorCode = (typeof ERROR_CODES)[number];
@@ -42,7 +44,9 @@ export const ERROR_CODE_STATUS: Record<ErrorCode, number> = {
   INVALID_STATUS_TRANSITION: HttpStatus.CONFLICT,
   MEDIA_LIMIT_REACHED: HttpStatus.CONFLICT,
   ROOM_LIMIT_REACHED: HttpStatus.CONFLICT,
+  ROOM_HAS_BOOKINGS: HttpStatus.CONFLICT,
   RATE_OVERRIDE_CONFLICT: HttpStatus.CONFLICT,
+  BOOKING_CONFLICT: HttpStatus.CONFLICT,
 };
 
 const STATUS_CODE: Partial<Record<number, ErrorCode>> = {

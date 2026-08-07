@@ -39,6 +39,7 @@ const DETAIL_SELECT = {
   houseRules: true,
   amenities: true,
   mealPlan: true,
+  mealChargePerPerson: true,
   gstEnabled: true,
   gstin: true,
   homestayRegistrationNumber: true,

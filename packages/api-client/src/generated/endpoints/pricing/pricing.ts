@@ -27,9 +27,7 @@ import type {
 import type {
   ApiErrorDto,
   CreateRateOverrideDto,
-  PricingDtoOutput,
-  UpdateMealChargeDto,
-  UpdateRoomRatesDto
+  PricingDtoOutput
 } from '../../models';
 
 import { apiFetch } from '../../../fetcher';
@@ -149,139 +147,7 @@ export function usePricingFind<TData = Awaited<ReturnType<typeof pricingFind>>, 
 
 
 
-export const getPricingUpdateMealChargeUrl = (propertyId: string,) => {
-
-
-
-
-  return `/properties/${propertyId}/pricing`
-}
-
-export const pricingUpdateMealCharge = async (propertyId: string,
-    updateMealChargeDto: UpdateMealChargeDto, options?: Parameters<typeof apiFetch>[1]): Promise<PricingDtoOutput> => {
-
-  return apiFetch<PricingDtoOutput>(getPricingUpdateMealChargeUrl(propertyId),
-  {
-    ...options,
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(updateMealChargeDto)
-  }
-);}
-
-
-
-
-
-export const getPricingUpdateMealChargeMutationOptions = <TError = ErrorType<ApiErrorDto>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof pricingUpdateMealCharge>>, TError,{propertyId: string;data: UpdateMealChargeDto}, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof pricingUpdateMealCharge>>, TError,{propertyId: string;data: UpdateMealChargeDto}, TContext> => {
-
-const mutationKey = ['pricingUpdateMealCharge'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof pricingUpdateMealCharge>>, {propertyId: string;data: UpdateMealChargeDto}> = (props) => {
-          const {propertyId,data} = props ?? {};
-
-          return  pricingUpdateMealCharge(propertyId,data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PricingUpdateMealChargeMutationResult = NonNullable<Awaited<ReturnType<typeof pricingUpdateMealCharge>>>
-    export type PricingUpdateMealChargeMutationBody = UpdateMealChargeDto
-    export type PricingUpdateMealChargeMutationError = ErrorType<ApiErrorDto>
-
-    export const usePricingUpdateMealCharge = <TError = ErrorType<ApiErrorDto>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof pricingUpdateMealCharge>>, TError,{propertyId: string;data: UpdateMealChargeDto}, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof pricingUpdateMealCharge>>,
-        TError,
-        {propertyId: string;data: UpdateMealChargeDto},
-        TContext
-      > => {
-      return useMutation(getPricingUpdateMealChargeMutationOptions(options), queryClient);
-    }
-    export const getPricingUpdateRoomRatesUrl = (propertyId: string,
-    roomId: string,) => {
-
-
-
-
-  return `/properties/${propertyId}/pricing/rooms/${roomId}`
-}
-
-export const pricingUpdateRoomRates = async (propertyId: string,
-    roomId: string,
-    updateRoomRatesDto: UpdateRoomRatesDto, options?: Parameters<typeof apiFetch>[1]): Promise<PricingDtoOutput> => {
-
-  return apiFetch<PricingDtoOutput>(getPricingUpdateRoomRatesUrl(propertyId,roomId),
-  {
-    ...options,
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(updateRoomRatesDto)
-  }
-);}
-
-
-
-
-
-export const getPricingUpdateRoomRatesMutationOptions = <TError = ErrorType<ApiErrorDto>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof pricingUpdateRoomRates>>, TError,{propertyId: string;roomId: string;data: UpdateRoomRatesDto}, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof pricingUpdateRoomRates>>, TError,{propertyId: string;roomId: string;data: UpdateRoomRatesDto}, TContext> => {
-
-const mutationKey = ['pricingUpdateRoomRates'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof pricingUpdateRoomRates>>, {propertyId: string;roomId: string;data: UpdateRoomRatesDto}> = (props) => {
-          const {propertyId,roomId,data} = props ?? {};
-
-          return  pricingUpdateRoomRates(propertyId,roomId,data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PricingUpdateRoomRatesMutationResult = NonNullable<Awaited<ReturnType<typeof pricingUpdateRoomRates>>>
-    export type PricingUpdateRoomRatesMutationBody = UpdateRoomRatesDto
-    export type PricingUpdateRoomRatesMutationError = ErrorType<ApiErrorDto>
-
-    export const usePricingUpdateRoomRates = <TError = ErrorType<ApiErrorDto>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof pricingUpdateRoomRates>>, TError,{propertyId: string;roomId: string;data: UpdateRoomRatesDto}, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof pricingUpdateRoomRates>>,
-        TError,
-        {propertyId: string;roomId: string;data: UpdateRoomRatesDto},
-        TContext
-      > => {
-      return useMutation(getPricingUpdateRoomRatesMutationOptions(options), queryClient);
-    }
-    export const getPricingCreateOverrideUrl = (propertyId: string,) => {
+export const getPricingCreateOverrideUrl = (propertyId: string,) => {
 
 
 

@@ -70,6 +70,14 @@ enum RoomAmenity {
   AIR_CONDITIONING
 }
 
+/// What a row of `RoomStay` is holding the room for. Both kinds occupy the room
+/// identically, which is the point: one table, one conflict rule, one set of
+/// tests.
+enum StayKind {
+  BOOKING
+  BLOCK
+}
+
 /// Where an image is in the upload pipeline. A row exists from the moment the
 /// API hands out a presigned URL, so an upload the host abandoned is a row the
 /// sweep can find rather than an object nothing knows about.
@@ -256,6 +264,7 @@ model Room {
   property  Property       @relation(fields: [propertyId], references: [id], onDelete: Restrict)
   media     MediaAsset[]
   overrides RateOverride[]
+  stays     RoomStay[]
 
   /// Not a second identity — it is what lets a photo's foreign key carry both
   /// columns, so the database refuses a photo pointing at a room of a different
@@ -293,6 +302,51 @@ model RateOverride {
 
   @@index([propertyId, startDate])
   @@map("rate_overrides")
+}
+
+/// **The single occupancy table.** A booked room and a room the host is holding
+/// back are the same row with a different `kind`, so there is exactly one thing
+/// to ask "is this room free?" and exactly one conflict rule to get right.
+///
+/// A second source of availability truth is the failure that loses a host
+/// permanently, which is why nothing else in this system may answer that
+/// question.
+///
+/// The range is half-open, `[checkIn, checkOut)`: the guest leaving on the 16th
+/// does not hold the night of the 15th, and the next guest may arrive that
+/// morning. Same-day turnover is therefore legal by construction rather than by
+/// a special case someone has to remember.
+model RoomStay {
+  id         String   @id @default(uuid(7))
+  propertyId String   @map("property_id")
+  roomId     String   @map("room_id")
+  kind       StayKind
+
+  checkIn  DateTime @map("check_in") @db.Date
+  /// Exclusive. The first morning the room is free again.
+  checkOut DateTime @map("check_out") @db.Date
+
+  /// What the host wrote on a block — "repairs", "family visiting", "Airbnb".
+  /// Null on a booking, whose guest details are the label.
+  reason String?
+
+  /// Whether this row consumes the room. Always true for a block; for a booking
+  /// it follows the booking's status, so cancelling frees the dates without
+  /// deleting the record. It is the predicate of the exclusion constraint, which
+  /// is why it is a stored column rather than something derived at query time.
+  occupies Boolean @default(true)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  /// Restrict, not cascade: deleting a room must never quietly delete the record
+  /// that someone slept in it. The rooms module clears a room's blocks itself and
+  /// lets this refuse the rest.
+  room Room @relation(fields: [roomId, propertyId], references: [id, propertyId], onDelete: Restrict)
+
+  @@index([propertyId, checkIn])
+  @@index([roomId, checkIn])
+  @@map("room_stays")
 }
 
 /// A photo of the property. Bytes never pass through the API: it signs an upload

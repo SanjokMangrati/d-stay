@@ -26,10 +26,6 @@ export function propertyRoomsPath(propertyId: string): string {
   return `${propertyHomePath(propertyId)}/rooms`;
 }
 
-export function propertyPricingPath(propertyId: string): string {
-  return `${propertyHomePath(propertyId)}/pricing`;
-}
-
 export function newRoomPath(propertyId: string): string {
   return `${propertyRoomsPath(propertyId)}/new`;
 }

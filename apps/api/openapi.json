@@ -884,112 +884,6 @@
         "tags": [
           "pricing"
         ]
-      },
-      "patch": {
-        "operationId": "Pricing_updateMealCharge",
-        "parameters": [
-          {
-            "name": "propertyId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateMealChargeDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PricingDto_Output"
-                }
-              }
-            }
-          },
-          "default": {
-            "description": "Error envelope returned by every failing request.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorDto"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "pricing"
-        ]
-      }
-    },
-    "/properties/{propertyId}/pricing/rooms/{roomId}": {
-      "patch": {
-        "operationId": "Pricing_updateRoomRates",
-        "parameters": [
-          {
-            "name": "propertyId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "roomId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateRoomRatesDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PricingDto_Output"
-                }
-              }
-            }
-          },
-          "default": {
-            "description": "Error envelope returned by every failing request.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorDto"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "pricing"
-        ]
       }
     },
     "/properties/{propertyId}/pricing/overrides": {
@@ -1087,6 +981,217 @@
         },
         "tags": [
           "pricing"
+        ]
+      }
+    },
+    "/properties/{propertyId}/availability": {
+      "get": {
+        "operationId": "Availability_find",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "format": "date",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "format": "date",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StayListDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error envelope returned by every failing request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "availability"
+        ]
+      }
+    },
+    "/properties/{propertyId}/availability/free-rooms": {
+      "get": {
+        "operationId": "Availability_freeRooms",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "checkIn",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "format": "date",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "checkOut",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "format": "date",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FreeRoomsDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error envelope returned by every failing request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "availability"
+        ]
+      }
+    },
+    "/properties/{propertyId}/availability/blocks": {
+      "post": {
+        "operationId": "Availability_createBlocks",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBlockDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StayListDto_Output"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error envelope returned by every failing request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "availability"
+        ]
+      }
+    },
+    "/properties/{propertyId}/availability/blocks/{stayId}": {
+      "delete": {
+        "operationId": "Availability_removeBlock",
+        "parameters": [
+          {
+            "name": "propertyId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "stayId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "default": {
+            "description": "Error envelope returned by every failing request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "availability"
         ]
       }
     }
@@ -1374,6 +1479,11 @@
             ],
             "nullable": true
           },
+          "mealChargePerPerson": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
           "gstEnabled": {
             "type": "boolean"
           },
@@ -1424,6 +1534,7 @@
           "houseRules",
           "amenities",
           "mealPlan",
+          "mealChargePerPerson",
           "gstEnabled",
           "gstin",
           "homestayRegistrationNumber",
@@ -1520,6 +1631,11 @@
               null
             ],
             "nullable": true
+          },
+          "mealChargePerPerson": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000000
           },
           "gstEnabled": {
             "type": "boolean"
@@ -1855,6 +1971,23 @@
                 "isActive": {
                   "type": "boolean"
                 },
+                "baseRate": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991,
+                  "nullable": true
+                },
+                "weekendRate": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991,
+                  "nullable": true
+                },
+                "extraGuestCharge": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
                 "photoCount": {
                   "type": "integer",
                   "minimum": -9007199254740991,
@@ -1878,6 +2011,9 @@
                 "amenities",
                 "sortOrder",
                 "isActive",
+                "baseRate",
+                "weekendRate",
+                "extraGuestCharge",
                 "photoCount",
                 "coverThumbnailUrl"
               ],
@@ -1939,6 +2075,26 @@
                 "AIR_CONDITIONING"
               ]
             }
+          },
+          "baseRate": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000000,
+            "default": null,
+            "nullable": true
+          },
+          "weekendRate": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000000,
+            "default": null,
+            "nullable": true
+          },
+          "extraGuestCharge": {
+            "default": 0,
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000000
           }
         },
         "required": [
@@ -2012,6 +2168,23 @@
           "isActive": {
             "type": "boolean"
           },
+          "baseRate": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "nullable": true
+          },
+          "weekendRate": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "nullable": true
+          },
+          "extraGuestCharge": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
           "photoCount": {
             "type": "integer",
             "minimum": -9007199254740991,
@@ -2035,6 +2208,9 @@
           "amenities",
           "sortOrder",
           "isActive",
+          "baseRate",
+          "weekendRate",
+          "extraGuestCharge",
           "photoCount",
           "coverThumbnailUrl"
         ],
@@ -2107,6 +2283,26 @@
                 "AIR_CONDITIONING"
               ]
             }
+          },
+          "baseRate": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000000,
+            "default": null,
+            "nullable": true
+          },
+          "weekendRate": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000000,
+            "default": null,
+            "nullable": true
+          },
+          "extraGuestCharge": {
+            "default": 0,
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000000
           },
           "isActive": {
             "type": "boolean"
@@ -2255,46 +2451,6 @@
         ],
         "additionalProperties": false
       },
-      "UpdateMealChargeDto": {
-        "type": "object",
-        "properties": {
-          "mealChargePerPerson": {
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 100000000
-          }
-        },
-        "required": [
-          "mealChargePerPerson"
-        ]
-      },
-      "UpdateRoomRatesDto": {
-        "type": "object",
-        "properties": {
-          "baseRate": {
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 100000000,
-            "nullable": true
-          },
-          "weekendRate": {
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 100000000,
-            "nullable": true
-          },
-          "extraGuestCharge": {
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 100000000
-          }
-        },
-        "required": [
-          "baseRate",
-          "weekendRate",
-          "extraGuestCharge"
-        ]
-      },
       "CreateRateOverrideDto": {
         "type": "object",
         "properties": {
@@ -2337,6 +2493,128 @@
           "minStayNights"
         ]
       },
+      "StayListDto_Output": {
+        "type": "object",
+        "properties": {
+          "stays": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "roomId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "BOOKING",
+                    "BLOCK"
+                  ]
+                },
+                "checkIn": {
+                  "type": "string",
+                  "format": "date",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                },
+                "checkOut": {
+                  "type": "string",
+                  "format": "date",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                },
+                "reason": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "required": [
+                "id",
+                "roomId",
+                "kind",
+                "checkIn",
+                "checkOut",
+                "reason"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "stays"
+        ],
+        "additionalProperties": false
+      },
+      "FreeRoomsDto_Output": {
+        "type": "object",
+        "properties": {
+          "checkIn": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "checkOut": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "roomIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          }
+        },
+        "required": [
+          "checkIn",
+          "checkOut",
+          "roomIds"
+        ],
+        "additionalProperties": false
+      },
+      "CreateBlockDto": {
+        "type": "object",
+        "properties": {
+          "roomIds": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          },
+          "checkIn": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "checkOut": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "nullable": true
+          }
+        },
+        "required": [
+          "roomIds",
+          "checkIn",
+          "checkOut",
+          "reason"
+        ]
+      },
       "ApiErrorDto": {
         "type": "object",
         "properties": {
@@ -2357,7 +2635,9 @@
                   "INVALID_STATUS_TRANSITION",
                   "MEDIA_LIMIT_REACHED",
                   "ROOM_LIMIT_REACHED",
-                  "RATE_OVERRIDE_CONFLICT"
+                  "ROOM_HAS_BOOKINGS",
+                  "RATE_OVERRIDE_CONFLICT",
+                  "BOOKING_CONFLICT"
                 ]
               },
               "message": {

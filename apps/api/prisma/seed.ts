@@ -13,6 +13,7 @@ import {
   PropertyRole,
   PropertyStatus,
   RoomAmenity,
+  StayKind,
   UserRole,
 } from '../generated/prisma/enums';
 import { createAuth } from '../src/auth/auth.factory';
@@ -25,8 +26,8 @@ import { MEDIA_QUEUE, type MediaJobData } from '../src/media/media.jobs';
  * The pilot dataset. Today it is only what authorization needs: a platform
  * operator, and two unrelated hosts each owning a property — which is what makes
  * "a host cannot see someone else's property" something you can check by hand as
- * well as in a test. Seasonal rates, bookings across every status and blocks join
- * it as those modules are built.
+ * well as in a test — plus seasonal rates and blocked dates, so the calendar has
+ * something in it. Bookings across every status join as that module is built.
  *
  * Accounts are created through Better Auth rather than by inserting rows, so the
  * seeded password hashes are the same ones a real sign-up produces.
@@ -54,6 +55,13 @@ const HOSTS: {
     nights: number;
     nightlyRate: number;
     minStayNights: number | null;
+  }[];
+  /** Dates the host is holding back, likewise placed around today. */
+  blocks: {
+    rooms: string[];
+    startsInDays: number;
+    nights: number;
+    reason: string;
   }[];
 }[] = [
   {
@@ -171,6 +179,36 @@ const HOSTS: {
         minStayNights: 2,
       },
     ],
+    // Three reasons a host holds dates back, so the calendar has each of them in
+    // it: work on the house, an OTA booking recorded by hand, and family. The
+    // last two abut on the same room — the calendar has to draw two blocks that
+    // touch without merging them.
+    blocks: [
+      {
+        rooms: ['Back room'],
+        startsInDays: 0,
+        nights: 30,
+        reason: 'Damp — out of service',
+      },
+      {
+        rooms: ['Deodar Room'],
+        startsInDays: 9,
+        nights: 3,
+        reason: 'Airbnb booking',
+      },
+      {
+        rooms: ['Deodar Room'],
+        startsInDays: 12,
+        nights: 2,
+        reason: 'Sister visiting',
+      },
+      {
+        rooms: ['Tulsi Room', 'The attic'],
+        startsInDays: 21,
+        nights: 4,
+        reason: 'Roof work',
+      },
+    ],
   },
   {
     email: 'thomas@example.com',
@@ -191,6 +229,7 @@ const HOSTS: {
     photoColours: [],
     rooms: [],
     seasons: [],
+    blocks: [],
   },
 ];
 
@@ -280,6 +319,23 @@ async function main(): Promise<void> {
             endDate: parseStayDate(addDays(startDate, season.nights - 1)),
             nightlyRate: season.nightlyRate,
             minStayNights: season.minStayNights,
+          })),
+      });
+    }
+
+    for (const block of host.blocks) {
+      const checkIn = addDays(todayStayDate(), block.startsInDays);
+      await prisma.roomStay.createMany({
+        data: property.rooms
+          .filter((room) => block.rooms.includes(room.name))
+          .map((room) => ({
+            propertyId: property.id,
+            roomId: room.id,
+            kind: StayKind.BLOCK,
+            checkIn: parseStayDate(checkIn),
+            // Half-open: `nights` nights means checking out that many days on.
+            checkOut: parseStayDate(addDays(checkIn, block.nights)),
+            reason: block.reason,
           })),
       });
     }

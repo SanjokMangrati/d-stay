@@ -11,6 +11,7 @@ import type {
   RoomListDtoOutput,
   RoomListDtoOutputRoomsItem,
 } from "@d-stay/api-client/models";
+import { formatPaise } from "@d-stay/domain/money";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   ChevronDownIcon,
@@ -110,6 +111,20 @@ export function RoomList({
                     {room.photoCount > 0
                       ? t("photoCount", { count: room.photoCount })
                       : t("noPhotos")}
+                  </p>
+                  {/* A room with no rate cannot be quoted, which is worth saying
+                      here rather than leaving the host to find it out from an
+                      empty calendar cell. */}
+                  <p
+                    className={
+                      room.baseRate === null
+                        ? "text-destructive text-sm"
+                        : "text-sm font-medium"
+                    }
+                  >
+                    {room.baseRate === null
+                      ? t("unpriced")
+                      : t("perNight", { amount: formatPaise(room.baseRate) })}
                   </p>
                 </div>
 

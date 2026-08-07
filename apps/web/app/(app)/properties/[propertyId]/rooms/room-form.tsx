@@ -13,6 +13,7 @@ import {
   roomsUpdateBodyMaxOccupancyMax,
   roomsUpdateBodyNameMax,
 } from "@d-stay/api-client/schemas/rooms";
+import { paiseToRupees, rupeesToPaise } from "@d-stay/domain/money";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { getPropertiesFindOneQueryKey } from "@d-stay/api-client/endpoints/properties";
@@ -33,18 +34,30 @@ import {
   FieldSet,
 } from "@/components/ui/field";
 import { Switch } from "@/components/ui/switch";
-import { FORM_VALIDATION_MODE } from "@/lib/form-mode";
+import { FORM_VALIDATION_MODE, OPTIONAL_NUMBER_INPUT } from "@/lib/form-mode";
+import {
+  MAX_RATE_RUPEES,
+  optionalRupeeAmount,
+  rupeeAmount,
+} from "@/lib/pricing/rupees";
 import { propertyRoomsPath, roomPath } from "@/lib/properties/property-paths";
 
 /**
  * The occupancy rule is the database's CHECK constraint restated: OpenAPI cannot
  * carry a cross-field refinement, so the generated schema has lost it and the
  * host would otherwise learn about it from a rejected request.
+ *
+ * Rates are overridden to rupees because that is what a host says out loud and
+ * types; they are converted back to paise at submit, which is the only unit that
+ * crosses the wire.
  */
-const roomSchema = RoomsUpdateBody.refine(
-  (values) => values.maxOccupancy >= values.standardOccupancy,
-  { path: ["maxOccupancy"] },
-);
+const roomSchema = RoomsUpdateBody.extend({
+  baseRate: optionalRupeeAmount,
+  weekendRate: optionalRupeeAmount,
+  extraGuestCharge: rupeeAmount,
+}).refine((values) => values.maxOccupancy >= values.standardOccupancy, {
+  path: ["maxOccupancy"],
+});
 
 type RoomValues = z.infer<typeof roomSchema>;
 
@@ -104,6 +117,10 @@ export function RoomForm({
       maxOccupancy: room?.maxOccupancy ?? 3,
       amenities: room?.amenities ?? [],
       isActive: room?.isActive ?? true,
+      baseRate: room?.baseRate == null ? null : paiseToRupees(room.baseRate),
+      weekendRate:
+        room?.weekendRate == null ? null : paiseToRupees(room.weekendRate),
+      extraGuestCharge: paiseToRupees(room?.extraGuestCharge ?? 0),
     },
   });
   const { errors, isSubmitting, isValid } = form.formState;
@@ -112,6 +129,11 @@ export function RoomForm({
     const data = {
       ...values,
       description: values.description?.trim() ? values.description : null,
+      // Rupees are what the host typed; paise are the only unit stored.
+      baseRate: values.baseRate === null ? null : rupeesToPaise(values.baseRate),
+      weekendRate:
+        values.weekendRate === null ? null : rupeesToPaise(values.weekendRate),
+      extraGuestCharge: rupeesToPaise(values.extraGuestCharge),
     };
 
     if (room) {
@@ -203,6 +225,50 @@ export function RoomForm({
             {...form.register("maxOccupancy", { valueAsNumber: true })}
           />
         </div>
+
+        {/* What the room costs when no season says otherwise. It sits with the
+            room because it is a standing fact about it, like its occupancy —
+            a price that belongs to particular dates is set on the calendar. */}
+        <FieldSet>
+          <FieldLegend variant="label">{t("fields.rates")}</FieldLegend>
+          <FieldDescription>{t("fields.ratesHint")}</FieldDescription>
+
+          <TextField
+            id="baseRate"
+            type="number"
+            inputMode="numeric"
+            min={0}
+            max={MAX_RATE_RUPEES}
+            label={t("fields.baseRate")}
+            description={t("fields.baseRateHint")}
+            error={errors.baseRate && t("validation.amount")}
+            {...form.register("baseRate", OPTIONAL_NUMBER_INPUT)}
+          />
+
+          <TextField
+            id="weekendRate"
+            type="number"
+            inputMode="numeric"
+            min={0}
+            max={MAX_RATE_RUPEES}
+            label={t("fields.weekendRate")}
+            description={t("fields.weekendRateHint")}
+            error={errors.weekendRate && t("validation.amount")}
+            {...form.register("weekendRate", OPTIONAL_NUMBER_INPUT)}
+          />
+
+          <TextField
+            id="extraGuestCharge"
+            type="number"
+            inputMode="numeric"
+            min={0}
+            max={MAX_RATE_RUPEES}
+            label={t("fields.extraGuestCharge")}
+            description={t("fields.extraGuestChargeHint")}
+            error={errors.extraGuestCharge && t("validation.amount")}
+            {...form.register("extraGuestCharge", { valueAsNumber: true })}
+          />
+        </FieldSet>
 
         <Controller
           control={form.control}

@@ -31,6 +31,15 @@ export const roomsListResponseRoomsItemMaxOccupancyMax = 9007199254740991;
 export const roomsListResponseRoomsItemSortOrderMin = -9007199254740991;
 export const roomsListResponseRoomsItemSortOrderMax = 9007199254740991;
 
+export const roomsListResponseRoomsItemBaseRateMin = -9007199254740991;
+export const roomsListResponseRoomsItemBaseRateMax = 9007199254740991;
+
+export const roomsListResponseRoomsItemWeekendRateMin = -9007199254740991;
+export const roomsListResponseRoomsItemWeekendRateMax = 9007199254740991;
+
+export const roomsListResponseRoomsItemExtraGuestChargeMin = -9007199254740991;
+export const roomsListResponseRoomsItemExtraGuestChargeMax = 9007199254740991;
+
 export const roomsListResponseRoomsItemPhotoCountMin = -9007199254740991;
 export const roomsListResponseRoomsItemPhotoCountMax = 9007199254740991;
 
@@ -49,6 +58,9 @@ export const RoomsListResponse = zod.object({
   "amenities": zod.array(zod.enum(['ATTACHED_BATHROOM', 'BALCONY', 'HEATER', 'AIR_CONDITIONING'])),
   "sortOrder": zod.int().min(roomsListResponseRoomsItemSortOrderMin).max(roomsListResponseRoomsItemSortOrderMax),
   "isActive": zod.boolean(),
+  "baseRate": zod.int().min(roomsListResponseRoomsItemBaseRateMin).max(roomsListResponseRoomsItemBaseRateMax).nullable(),
+  "weekendRate": zod.int().min(roomsListResponseRoomsItemWeekendRateMin).max(roomsListResponseRoomsItemWeekendRateMax).nullable(),
+  "extraGuestCharge": zod.int().min(roomsListResponseRoomsItemExtraGuestChargeMin).max(roomsListResponseRoomsItemExtraGuestChargeMax),
   "photoCount": zod.int().min(roomsListResponseRoomsItemPhotoCountMin).max(roomsListResponseRoomsItemPhotoCountMax),
   "coverThumbnailUrl": zod.url().nullable()
 }))
@@ -75,6 +87,18 @@ export const roomsCreateBodyStandardOccupancyMax = 20;
 
 export const roomsCreateBodyMaxOccupancyMax = 20;
 
+export const roomsCreateBodyBaseRateDefault = null;
+export const roomsCreateBodyBaseRateMin = 0;
+export const roomsCreateBodyBaseRateMax = 100000000;
+
+export const roomsCreateBodyWeekendRateDefault = null;
+export const roomsCreateBodyWeekendRateMin = 0;
+export const roomsCreateBodyWeekendRateMax = 100000000;
+
+export const roomsCreateBodyExtraGuestChargeDefault = 0;
+export const roomsCreateBodyExtraGuestChargeMin = 0;
+export const roomsCreateBodyExtraGuestChargeMax = 100000000;
+
 
 
 export const RoomsCreateBody = zod.object({
@@ -85,7 +109,10 @@ export const RoomsCreateBody = zod.object({
   "extraMattresses": zod.int().min(roomsCreateBodyExtraMattressesMin).max(roomsCreateBodyExtraMattressesMax),
   "standardOccupancy": zod.int().min(1).max(roomsCreateBodyStandardOccupancyMax),
   "maxOccupancy": zod.int().min(1).max(roomsCreateBodyMaxOccupancyMax),
-  "amenities": zod.array(zod.enum(['ATTACHED_BATHROOM', 'BALCONY', 'HEATER', 'AIR_CONDITIONING']))
+  "amenities": zod.array(zod.enum(['ATTACHED_BATHROOM', 'BALCONY', 'HEATER', 'AIR_CONDITIONING'])),
+  "baseRate": zod.int().min(roomsCreateBodyBaseRateMin).max(roomsCreateBodyBaseRateMax).nullish().default(roomsCreateBodyBaseRateDefault),
+  "weekendRate": zod.int().min(roomsCreateBodyWeekendRateMin).max(roomsCreateBodyWeekendRateMax).nullish().default(roomsCreateBodyWeekendRateDefault),
+  "extraGuestCharge": zod.int().min(roomsCreateBodyExtraGuestChargeMin).max(roomsCreateBodyExtraGuestChargeMax).default(roomsCreateBodyExtraGuestChargeDefault)
 })
 
 export const roomsCreateResponseIdRegExp = new RegExp('^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$');
@@ -107,6 +134,15 @@ export const roomsCreateResponseMaxOccupancyMax = 9007199254740991;
 export const roomsCreateResponseSortOrderMin = -9007199254740991;
 export const roomsCreateResponseSortOrderMax = 9007199254740991;
 
+export const roomsCreateResponseBaseRateMin = -9007199254740991;
+export const roomsCreateResponseBaseRateMax = 9007199254740991;
+
+export const roomsCreateResponseWeekendRateMin = -9007199254740991;
+export const roomsCreateResponseWeekendRateMax = 9007199254740991;
+
+export const roomsCreateResponseExtraGuestChargeMin = -9007199254740991;
+export const roomsCreateResponseExtraGuestChargeMax = 9007199254740991;
+
 export const roomsCreateResponsePhotoCountMin = -9007199254740991;
 export const roomsCreateResponsePhotoCountMax = 9007199254740991;
 
@@ -124,6 +160,9 @@ export const RoomsCreateResponse = zod.object({
   "amenities": zod.array(zod.enum(['ATTACHED_BATHROOM', 'BALCONY', 'HEATER', 'AIR_CONDITIONING'])),
   "sortOrder": zod.int().min(roomsCreateResponseSortOrderMin).max(roomsCreateResponseSortOrderMax),
   "isActive": zod.boolean(),
+  "baseRate": zod.int().min(roomsCreateResponseBaseRateMin).max(roomsCreateResponseBaseRateMax).nullable(),
+  "weekendRate": zod.int().min(roomsCreateResponseWeekendRateMin).max(roomsCreateResponseWeekendRateMax).nullable(),
+  "extraGuestCharge": zod.int().min(roomsCreateResponseExtraGuestChargeMin).max(roomsCreateResponseExtraGuestChargeMax),
   "photoCount": zod.int().min(roomsCreateResponsePhotoCountMin).max(roomsCreateResponsePhotoCountMax),
   "coverThumbnailUrl": zod.url().nullable()
 })
@@ -160,6 +199,15 @@ export const roomsReorderResponseRoomsItemMaxOccupancyMax = 9007199254740991;
 export const roomsReorderResponseRoomsItemSortOrderMin = -9007199254740991;
 export const roomsReorderResponseRoomsItemSortOrderMax = 9007199254740991;
 
+export const roomsReorderResponseRoomsItemBaseRateMin = -9007199254740991;
+export const roomsReorderResponseRoomsItemBaseRateMax = 9007199254740991;
+
+export const roomsReorderResponseRoomsItemWeekendRateMin = -9007199254740991;
+export const roomsReorderResponseRoomsItemWeekendRateMax = 9007199254740991;
+
+export const roomsReorderResponseRoomsItemExtraGuestChargeMin = -9007199254740991;
+export const roomsReorderResponseRoomsItemExtraGuestChargeMax = 9007199254740991;
+
 export const roomsReorderResponseRoomsItemPhotoCountMin = -9007199254740991;
 export const roomsReorderResponseRoomsItemPhotoCountMax = 9007199254740991;
 
@@ -178,6 +226,9 @@ export const RoomsReorderResponse = zod.object({
   "amenities": zod.array(zod.enum(['ATTACHED_BATHROOM', 'BALCONY', 'HEATER', 'AIR_CONDITIONING'])),
   "sortOrder": zod.int().min(roomsReorderResponseRoomsItemSortOrderMin).max(roomsReorderResponseRoomsItemSortOrderMax),
   "isActive": zod.boolean(),
+  "baseRate": zod.int().min(roomsReorderResponseRoomsItemBaseRateMin).max(roomsReorderResponseRoomsItemBaseRateMax).nullable(),
+  "weekendRate": zod.int().min(roomsReorderResponseRoomsItemWeekendRateMin).max(roomsReorderResponseRoomsItemWeekendRateMax).nullable(),
+  "extraGuestCharge": zod.int().min(roomsReorderResponseRoomsItemExtraGuestChargeMin).max(roomsReorderResponseRoomsItemExtraGuestChargeMax),
   "photoCount": zod.int().min(roomsReorderResponseRoomsItemPhotoCountMin).max(roomsReorderResponseRoomsItemPhotoCountMax),
   "coverThumbnailUrl": zod.url().nullable()
 }))
@@ -205,6 +256,18 @@ export const roomsUpdateBodyStandardOccupancyMax = 20;
 
 export const roomsUpdateBodyMaxOccupancyMax = 20;
 
+export const roomsUpdateBodyBaseRateDefault = null;
+export const roomsUpdateBodyBaseRateMin = 0;
+export const roomsUpdateBodyBaseRateMax = 100000000;
+
+export const roomsUpdateBodyWeekendRateDefault = null;
+export const roomsUpdateBodyWeekendRateMin = 0;
+export const roomsUpdateBodyWeekendRateMax = 100000000;
+
+export const roomsUpdateBodyExtraGuestChargeDefault = 0;
+export const roomsUpdateBodyExtraGuestChargeMin = 0;
+export const roomsUpdateBodyExtraGuestChargeMax = 100000000;
+
 
 
 export const RoomsUpdateBody = zod.object({
@@ -216,6 +279,9 @@ export const RoomsUpdateBody = zod.object({
   "standardOccupancy": zod.int().min(1).max(roomsUpdateBodyStandardOccupancyMax),
   "maxOccupancy": zod.int().min(1).max(roomsUpdateBodyMaxOccupancyMax),
   "amenities": zod.array(zod.enum(['ATTACHED_BATHROOM', 'BALCONY', 'HEATER', 'AIR_CONDITIONING'])),
+  "baseRate": zod.int().min(roomsUpdateBodyBaseRateMin).max(roomsUpdateBodyBaseRateMax).nullish().default(roomsUpdateBodyBaseRateDefault),
+  "weekendRate": zod.int().min(roomsUpdateBodyWeekendRateMin).max(roomsUpdateBodyWeekendRateMax).nullish().default(roomsUpdateBodyWeekendRateDefault),
+  "extraGuestCharge": zod.int().min(roomsUpdateBodyExtraGuestChargeMin).max(roomsUpdateBodyExtraGuestChargeMax).default(roomsUpdateBodyExtraGuestChargeDefault),
   "isActive": zod.boolean()
 })
 
@@ -238,6 +304,15 @@ export const roomsUpdateResponseMaxOccupancyMax = 9007199254740991;
 export const roomsUpdateResponseSortOrderMin = -9007199254740991;
 export const roomsUpdateResponseSortOrderMax = 9007199254740991;
 
+export const roomsUpdateResponseBaseRateMin = -9007199254740991;
+export const roomsUpdateResponseBaseRateMax = 9007199254740991;
+
+export const roomsUpdateResponseWeekendRateMin = -9007199254740991;
+export const roomsUpdateResponseWeekendRateMax = 9007199254740991;
+
+export const roomsUpdateResponseExtraGuestChargeMin = -9007199254740991;
+export const roomsUpdateResponseExtraGuestChargeMax = 9007199254740991;
+
 export const roomsUpdateResponsePhotoCountMin = -9007199254740991;
 export const roomsUpdateResponsePhotoCountMax = 9007199254740991;
 
@@ -255,6 +330,9 @@ export const RoomsUpdateResponse = zod.object({
   "amenities": zod.array(zod.enum(['ATTACHED_BATHROOM', 'BALCONY', 'HEATER', 'AIR_CONDITIONING'])),
   "sortOrder": zod.int().min(roomsUpdateResponseSortOrderMin).max(roomsUpdateResponseSortOrderMax),
   "isActive": zod.boolean(),
+  "baseRate": zod.int().min(roomsUpdateResponseBaseRateMin).max(roomsUpdateResponseBaseRateMax).nullable(),
+  "weekendRate": zod.int().min(roomsUpdateResponseWeekendRateMin).max(roomsUpdateResponseWeekendRateMax).nullable(),
+  "extraGuestCharge": zod.int().min(roomsUpdateResponseExtraGuestChargeMin).max(roomsUpdateResponseExtraGuestChargeMax),
   "photoCount": zod.int().min(roomsUpdateResponsePhotoCountMin).max(roomsUpdateResponsePhotoCountMax),
   "coverThumbnailUrl": zod.url().nullable()
 })
@@ -283,6 +361,15 @@ export const roomsRemoveResponseRoomsItemMaxOccupancyMax = 9007199254740991;
 export const roomsRemoveResponseRoomsItemSortOrderMin = -9007199254740991;
 export const roomsRemoveResponseRoomsItemSortOrderMax = 9007199254740991;
 
+export const roomsRemoveResponseRoomsItemBaseRateMin = -9007199254740991;
+export const roomsRemoveResponseRoomsItemBaseRateMax = 9007199254740991;
+
+export const roomsRemoveResponseRoomsItemWeekendRateMin = -9007199254740991;
+export const roomsRemoveResponseRoomsItemWeekendRateMax = 9007199254740991;
+
+export const roomsRemoveResponseRoomsItemExtraGuestChargeMin = -9007199254740991;
+export const roomsRemoveResponseRoomsItemExtraGuestChargeMax = 9007199254740991;
+
 export const roomsRemoveResponseRoomsItemPhotoCountMin = -9007199254740991;
 export const roomsRemoveResponseRoomsItemPhotoCountMax = 9007199254740991;
 
@@ -301,6 +388,9 @@ export const RoomsRemoveResponse = zod.object({
   "amenities": zod.array(zod.enum(['ATTACHED_BATHROOM', 'BALCONY', 'HEATER', 'AIR_CONDITIONING'])),
   "sortOrder": zod.int().min(roomsRemoveResponseRoomsItemSortOrderMin).max(roomsRemoveResponseRoomsItemSortOrderMax),
   "isActive": zod.boolean(),
+  "baseRate": zod.int().min(roomsRemoveResponseRoomsItemBaseRateMin).max(roomsRemoveResponseRoomsItemBaseRateMax).nullable(),
+  "weekendRate": zod.int().min(roomsRemoveResponseRoomsItemWeekendRateMin).max(roomsRemoveResponseRoomsItemWeekendRateMax).nullable(),
+  "extraGuestCharge": zod.int().min(roomsRemoveResponseRoomsItemExtraGuestChargeMin).max(roomsRemoveResponseRoomsItemExtraGuestChargeMax),
   "photoCount": zod.int().min(roomsRemoveResponseRoomsItemPhotoCountMin).max(roomsRemoveResponseRoomsItemPhotoCountMax),
   "coverThumbnailUrl": zod.url().nullable()
 }))

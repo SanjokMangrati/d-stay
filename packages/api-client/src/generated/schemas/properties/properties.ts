@@ -35,6 +35,9 @@ export const propertiesCreateResponseLatitudeMax = 90;
 export const propertiesCreateResponseLongitudeMin = -180;
 export const propertiesCreateResponseLongitudeMax = 180;
 
+export const propertiesCreateResponseMealChargePerPersonMin = -9007199254740991;
+export const propertiesCreateResponseMealChargePerPersonMax = 9007199254740991;
+
 
 
 export const PropertiesCreateResponse = zod.object({
@@ -56,6 +59,7 @@ export const PropertiesCreateResponse = zod.object({
   "houseRules": zod.string().nullable(),
   "amenities": zod.array(zod.enum(['PARKING', 'HOT_WATER', 'WIFI', 'GENERATOR', 'BONFIRE', 'PETS_ALLOWED'])),
   "mealPlan": zod.union([zod.literal('ROOM_ONLY'),zod.literal('BREAKFAST'),zod.literal('BREAKFAST_DINNER'),zod.literal('ALL_MEALS'),zod.literal(null)]).nullable(),
+  "mealChargePerPerson": zod.int().min(propertiesCreateResponseMealChargePerPersonMin).max(propertiesCreateResponseMealChargePerPersonMax),
   "gstEnabled": zod.boolean(),
   "gstin": zod.string().nullable(),
   "homestayRegistrationNumber": zod.string().nullable(),
@@ -72,6 +76,9 @@ export const propertiesFindOneResponseLatitudeMax = 90;
 
 export const propertiesFindOneResponseLongitudeMin = -180;
 export const propertiesFindOneResponseLongitudeMax = 180;
+
+export const propertiesFindOneResponseMealChargePerPersonMin = -9007199254740991;
+export const propertiesFindOneResponseMealChargePerPersonMax = 9007199254740991;
 
 
 
@@ -94,6 +101,7 @@ export const PropertiesFindOneResponse = zod.object({
   "houseRules": zod.string().nullable(),
   "amenities": zod.array(zod.enum(['PARKING', 'HOT_WATER', 'WIFI', 'GENERATOR', 'BONFIRE', 'PETS_ALLOWED'])),
   "mealPlan": zod.union([zod.literal('ROOM_ONLY'),zod.literal('BREAKFAST'),zod.literal('BREAKFAST_DINNER'),zod.literal('ALL_MEALS'),zod.literal(null)]).nullable(),
+  "mealChargePerPerson": zod.int().min(propertiesFindOneResponseMealChargePerPersonMin).max(propertiesFindOneResponseMealChargePerPersonMax),
   "gstEnabled": zod.boolean(),
   "gstin": zod.string().nullable(),
   "homestayRegistrationNumber": zod.string().nullable(),
@@ -128,6 +136,9 @@ export const propertiesUpdateBodyCheckInTimeRegExp = new RegExp('^([01]\\d|2[0-3
 export const propertiesUpdateBodyCheckOutTimeRegExp = new RegExp('^([01]\\d|2[0-3]):[0-5]\\d$');
 export const propertiesUpdateBodyHouseRulesMax = 4000;
 
+export const propertiesUpdateBodyMealChargePerPersonMin = 0;
+export const propertiesUpdateBodyMealChargePerPersonMax = 100000000;
+
 export const propertiesUpdateBodyGstinRegExp = new RegExp('^\\d{2}[A-Z]{5}\\d{4}[A-Z][1-9A-Z]Z[0-9A-Z]$');
 export const propertiesUpdateBodyHomestayRegistrationNumberMax = 60;
 
@@ -148,6 +159,7 @@ export const PropertiesUpdateBody = zod.object({
   "houseRules": zod.string().max(propertiesUpdateBodyHouseRulesMax).nullish(),
   "amenities": zod.array(zod.enum(['PARKING', 'HOT_WATER', 'WIFI', 'GENERATOR', 'BONFIRE', 'PETS_ALLOWED'])).optional(),
   "mealPlan": zod.union([zod.literal('ROOM_ONLY'),zod.literal('BREAKFAST'),zod.literal('BREAKFAST_DINNER'),zod.literal('ALL_MEALS'),zod.literal(null)]).nullish(),
+  "mealChargePerPerson": zod.int().min(propertiesUpdateBodyMealChargePerPersonMin).max(propertiesUpdateBodyMealChargePerPersonMax).optional(),
   "gstEnabled": zod.boolean().optional(),
   "gstin": zod.string().regex(propertiesUpdateBodyGstinRegExp).nullish(),
   "homestayRegistrationNumber": zod.string().max(propertiesUpdateBodyHomestayRegistrationNumberMax).nullish()
@@ -159,6 +171,9 @@ export const propertiesUpdateResponseLatitudeMax = 90;
 
 export const propertiesUpdateResponseLongitudeMin = -180;
 export const propertiesUpdateResponseLongitudeMax = 180;
+
+export const propertiesUpdateResponseMealChargePerPersonMin = -9007199254740991;
+export const propertiesUpdateResponseMealChargePerPersonMax = 9007199254740991;
 
 
 
@@ -181,6 +196,7 @@ export const PropertiesUpdateResponse = zod.object({
   "houseRules": zod.string().nullable(),
   "amenities": zod.array(zod.enum(['PARKING', 'HOT_WATER', 'WIFI', 'GENERATOR', 'BONFIRE', 'PETS_ALLOWED'])),
   "mealPlan": zod.union([zod.literal('ROOM_ONLY'),zod.literal('BREAKFAST'),zod.literal('BREAKFAST_DINNER'),zod.literal('ALL_MEALS'),zod.literal(null)]).nullable(),
+  "mealChargePerPerson": zod.int().min(propertiesUpdateResponseMealChargePerPersonMin).max(propertiesUpdateResponseMealChargePerPersonMax),
   "gstEnabled": zod.boolean(),
   "gstin": zod.string().nullable(),
   "homestayRegistrationNumber": zod.string().nullable(),
@@ -197,6 +213,9 @@ export const propertiesSubmitForReviewResponseLatitudeMax = 90;
 
 export const propertiesSubmitForReviewResponseLongitudeMin = -180;
 export const propertiesSubmitForReviewResponseLongitudeMax = 180;
+
+export const propertiesSubmitForReviewResponseMealChargePerPersonMin = -9007199254740991;
+export const propertiesSubmitForReviewResponseMealChargePerPersonMax = 9007199254740991;
 
 
 
@@ -219,6 +238,7 @@ export const PropertiesSubmitForReviewResponse = zod.object({
   "houseRules": zod.string().nullable(),
   "amenities": zod.array(zod.enum(['PARKING', 'HOT_WATER', 'WIFI', 'GENERATOR', 'BONFIRE', 'PETS_ALLOWED'])),
   "mealPlan": zod.union([zod.literal('ROOM_ONLY'),zod.literal('BREAKFAST'),zod.literal('BREAKFAST_DINNER'),zod.literal('ALL_MEALS'),zod.literal(null)]).nullable(),
+  "mealChargePerPerson": zod.int().min(propertiesSubmitForReviewResponseMealChargePerPersonMin).max(propertiesSubmitForReviewResponseMealChargePerPersonMax),
   "gstEnabled": zod.boolean(),
   "gstin": zod.string().nullable(),
   "homestayRegistrationNumber": zod.string().nullable(),

@@ -44,4 +44,21 @@ export interface CreateRoomDto {
      */
   maxOccupancy: number;
   amenities: CreateRoomDtoAmenitiesItem[];
+  /**
+     * @minimum 0
+     * @maximum 100000000
+     * @nullable
+     */
+  baseRate?: number | null;
+  /**
+     * @minimum 0
+     * @maximum 100000000
+     * @nullable
+     */
+  weekendRate?: number | null;
+  /**
+     * @minimum 0
+     * @maximum 100000000
+     */
+  extraGuestCharge?: number;
 }

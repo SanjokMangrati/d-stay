@@ -21,6 +21,9 @@ const MESSAGE_KEY: Partial<Record<ApiErrorCode, string>> = {
   INVALID_STATUS_TRANSITION: "invalidStatusTransition",
   MEDIA_LIMIT_REACHED: "mediaLimitReached",
   ROOM_LIMIT_REACHED: "roomLimitReached",
+  ROOM_HAS_BOOKINGS: "roomHasBookings",
+  RATE_OVERRIDE_CONFLICT: "rateOverrideConflict",
+  BOOKING_CONFLICT: "bookingConflict",
 };
 
 export function ApiErrorAlert({ error }: { error: unknown }) {

@@ -48,6 +48,23 @@ export interface RoomDtoOutput {
   /**
      * @minimum -9007199254740991
      * @maximum 9007199254740991
+     * @nullable
+     */
+  baseRate: number | null;
+  /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     * @nullable
+     */
+  weekendRate: number | null;
+  /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
+     */
+  extraGuestCharge: number;
+  /**
+     * @minimum -9007199254740991
+     * @maximum 9007199254740991
      */
   photoCount: number;
   /** @nullable */

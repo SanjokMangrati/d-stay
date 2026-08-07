@@ -2,9 +2,10 @@
 
 import { UpdatePropertyDtoMealPlan } from "@d-stay/api-client/models";
 import { PropertiesUpdateBody } from "@d-stay/api-client/schemas/properties";
+import { paiseToRupees, rupeesToPaise } from "@d-stay/domain/money";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import type { z } from "zod";
 import {
   emptyToNull,
@@ -13,6 +14,7 @@ import {
   type SetupStepProps,
 } from "../setup-step";
 import { FORM_VALIDATION_MODE } from "@/lib/form-mode";
+import { MAX_RATE_RUPEES, rupeeAmount } from "@/lib/pricing/rupees";
 import { TextField } from "@/components/text-field";
 import {
   Field,
@@ -28,11 +30,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+/**
+ * The meal charge lives with the meal plan rather than with a room's rates: one
+ * kitchen cooks for the whole house, so it is a fact about the property, and
+ * declaring the plan without its price is the half-decision that leaves meals
+ * absorbed instead of charged.
+ */
 const staySchema = PropertiesUpdateBody.pick({
   checkInTime: true,
   checkOutTime: true,
   mealPlan: true,
-});
+}).extend({ mealChargePerPerson: rupeeAmount });
 
 type StayValues = z.infer<typeof staySchema>;
 
@@ -58,15 +66,20 @@ export function StayStep({
       checkInTime: property.checkInTime ?? "",
       checkOutTime: property.checkOutTime ?? "",
       mealPlan: property.mealPlan,
+      mealChargePerPerson: paiseToRupees(property.mealChargePerPerson),
     },
   });
   const { errors, isValid } = form.formState;
+  // `useWatch` rather than `form.watch`, which returns a function the React
+  // Compiler cannot memoize and so skips optimising the whole step.
+  const mealPlan = useWatch({ control: form.control, name: "mealPlan" });
 
   const onSubmit = form.handleSubmit((values) =>
     onSave({
       checkInTime: emptyToNull(values.checkInTime),
       checkOutTime: emptyToNull(values.checkOutTime),
       mealPlan: values.mealPlan ?? null,
+      mealChargePerPerson: rupeesToPaise(values.mealChargePerPerson),
     }),
   );
 
@@ -116,6 +129,22 @@ export function StayStep({
             </Field>
           )}
         />
+
+        {/* Room-only has no meals to charge for, so the field would be a box
+            that must stay zero. */}
+        {mealPlan !== null && mealPlan !== "ROOM_ONLY" && (
+          <TextField
+            id="mealChargePerPerson"
+            type="number"
+            inputMode="numeric"
+            min={0}
+            max={MAX_RATE_RUPEES}
+            label={t("fields.mealCharge")}
+            description={t("fields.mealChargeHint")}
+            error={errors.mealChargePerPerson && t("validation.amount")}
+            {...form.register("mealChargePerPerson", { valueAsNumber: true })}
+          />
+        )}
       </FieldGroup>
 
       <SetupStepFooter onBack={onBack} isSaving={isSaving} isValid={isValid} />
